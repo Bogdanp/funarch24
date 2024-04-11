@@ -22,13 +22,14 @@
                  #:country "Romania")
 ]
 
-@keywords{Continuations}
+@keywords{Continuations, Web, Racket/Scheme, State management}
 
 @abstract{
-  Abstract goes here. A citation @~cite[b:racket].
-}
+  Surveys and experiments in economics involve stateful interactions: participants receive different messages based on earlier answers, choices, and performance, or trade across many rounds with other participants. In the design of congame, a platform for running such economic studies, we decided to use composable (?) continuations to manage the common (Marc: want to highlight that it is not how all state is managed, but default) flow of participants through a study. Here we report on the positives of this approach, as well as some challenges of using continuations, such as persisting and releasing values/bindings [at the right time/across requests], avoiding memory leaks, and the difficulty of debugging continuations. [Lessons? Discussion about patterns?]}
 
 @section{Introduction}
+
+A citation @~cite[b:racket]. Testing citations: @~cite[b:delimited-composable-control] and @~cite[b:seaside].
 
 @section{Challenges}
 
@@ -61,5 +62,12 @@ the ``framework'' to support the flows only involves regular Racket
 code, so there's no need to worry about migrating a database or any
 other external system when making changes to how the internal state is
 structured.
+
+* List some/all the variables that would have to be tracked and the various
+  levels/layers at which they would have to be tracked.
+
+* Is there any aspect of the composition of studies that is easier because we
+  use continuations, or would it have been equally easy with other ways of flow
+  control? My guess is that it doesn't.
 
 @(generate-bibliography #:sec-title "References")

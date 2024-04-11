@@ -38,3 +38,33 @@
    #:date "2007"
    #:url "https://doi.org/10.1007/s10990-007-9008-y"
    #:doi "10.1007/s10990-007-9008-y"))
+
+(define b:delimited-composable-control
+  (make-bib
+	#:title "Adding delimited and composable control to a production programming environment"
+	#:author (authors
+              "Matthew Flatt"
+              "Gang Yu"
+              "Robert Bruce Findler"
+              "Matthias Felleisen")
+	#:location (journal-location
+                "ACM SIGPLAN Notices"
+                #:volume 42
+                #:pages '(165 176))
+	#:url "https://dl.acm.org/doi/10.1145/1291220.1291178"
+	#:doi "10.1145/1291220.1291178"
+	#:date "2007"))
+
+(define b:seaside
+  (make-bib
+   #:title "Seaside: A flexible environment for building dynamic web applications"
+   #:author (authors
+             "Stéphane Ducasse"
+             "Adrian Lienhard"
+             "Lukas Renggli")
+   #:location (journal-location
+               "IEEE software"
+               #:volume 24
+               #:pages '(56 63))
+   #:url "https://ieeexplore.ieee.org/abstract/document/4302687/"
+   #:date "2007"))
