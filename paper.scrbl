@@ -56,7 +56,7 @@ can walk the ``stack''.
 
 * Natural to write flows without needing to worry too much about storing
 intermediate state anywhere (except for ``resuming''). When talking
-about this, we'll have to reference the web server paper. Developing
+about this, we'll have to reference the web server paper @~cite[b:web-server]. Developing
 the ``framework'' to support the flows only involves regular Racket
 code, so there's no need to worry about migrating a database or any
 other external system when making changes to how the internal state is
