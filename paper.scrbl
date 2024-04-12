@@ -25,7 +25,18 @@
 @keywords{Continuations, Web, Racket/Scheme, State management}
 
 @abstract{
-  Surveys and experiments in economics involve stateful interactions: participants receive different messages based on earlier answers, choices, and performance, or trade across many rounds with other participants. In the design of congame, a platform for running such economic studies, we decided to use composable (?) continuations to manage the common (Marc: want to highlight that it is not how all state is managed, but default) flow of participants through a study. Here we report on the positives of this approach, as well as some challenges of using continuations, such as persisting and releasing values/bindings [at the right time/across requests], avoiding memory leaks, and the difficulty of debugging continuations. [Lessons? Discussion about patterns?]}
+  Surveys and experiments in economics involve stateful interactions:
+  participants receive different messages based on earlier answers,
+  choices, and performance, or trade across many rounds with other
+  participants. In the design of congame, a platform for running such
+  economic studies, we decided to use delimited continuations to
+  manage the common (Marc: want to highlight that it is not how all
+  state is managed, but default) flow of participants through a study.
+  Here we report on the positives of this approach, as well as some
+  challenges of using continuations, such as persisting and releasing
+  values/bindings [at the right time/across requests], avoiding memory
+  leaks, and the difficulty of debugging continuations. [Lessons?
+  Discussion about patterns?]}
 
 @section{Introduction}
 
@@ -48,6 +59,8 @@ https://github.com/racket/racket/issues/4216
 * Using composable continuations may lead to ballooning of memory
 use when stack continuations that contain non-tail-recursive
 functions.
+
+https://github.com/MarcKaufmann/congame/commit/8cb69a0f869e0f49cd36579605326fbe00938361
 
 For all 3, talk about how we debugged the issues and tools needed to
 make debugging easier. Would be nice to have a proper debugger that
