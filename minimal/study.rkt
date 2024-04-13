@@ -6,10 +6,10 @@
 (provide (all-defined-out))
 
 (define current-embed/url
-  (make-parameter #f))
+  (make-parameter (λ (_) (error "embed/url not installed"))))
 
-(struct step (id handler))
-(struct study (id steps))
+(struct step (handler))
+(struct study (steps))
 
 (define (run-study the-study)
   (let loop ([steps (study-steps the-study)])
@@ -18,43 +18,38 @@
         (match (begin0 (run-step (car steps))
                  (redirect/get/forget))
           [`(continue ,paramz)
-           (call-with-parameterization paramz (λ () (loop (cdr steps))))]
-          [`(retry)
-           (loop steps)]
+           (call-with-parameterization paramz
+             (λ () (loop (cdr steps))))]
+          [`(retry ,paramz)
+           (call-with-parameterization paramz
+             (λ () (loop steps)))]
           [(? response? r)
            (send/back r)]))))
 
 (define (run-step the-step)
   (match the-step
-    [(step _ (? study? substudy))
+    [(step (? study? substudy))
      (run-study substudy)]
-    [(step _ handler)
+    [(step handler)
      (send/suspend/dispatch
       (lambda (embed/url)
         (parameterize ([current-embed/url embed/url])
           (response/xexpr (handler)))))]))
 
-(define (embed k)
-  (define paramz
-    (current-parameterization))
-  ((current-embed/url)
-   (lambda (req)
-     (k paramz req))))
-
 (define (button label [action void])
   `(a
-    ([href ,(embed
-             (lambda (paramz _req)
+    ([href ,((current-embed/url)
+             (lambda (_req)
                (action)
-               `(continue ,paramz)))])
+               `(continue ,(current-parameterization))))])
     ,label))
 
 (define (form e [action (λ (_req) #t)])
   `(form
-    ([action ,(embed
-               (lambda (paramz req)
+    ([action ,((current-embed/url)
+               (lambda (req)
                  (if (action req)
-                     `(continue ,paramz)
-                     `(retry))))]
+                     `(continue ,(current-parameterization))
+                     `(retry ,(current-parameterization)))))]
      [method "POST"])
     ,e))

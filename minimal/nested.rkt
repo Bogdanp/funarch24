@@ -24,10 +24,9 @@
 
 (define nested-study
   (study
-   'nested
    (list
-    (step 'intro intro)
-    (step 'example-1 example-study)
-    (step 'intermission intermission)
-    (step 'example-2 example-study)
-    (step 'done done))))
+    (step intro)
+    (step example-study)
+    (step intermission)
+    (step example-study)
+    (step done))))

@@ -43,8 +43,7 @@
 
 (define example-study
   (study
-   'example
    (list
-    (step 'hello hello)
-    (step 'details get-details)
-    (step 'done done))))
+    (step hello)
+    (step get-details)
+    (step done))))
