@@ -8,7 +8,11 @@
 
 (define (app _req)
   (run-study nested-study)
-  (response/xexpr "Done."))
+  (response/xexpr
+   `(div
+     (a
+      ([href "/"])
+      "Click here to start over."))))
 
 (module+ main
   (require racket/async-channel
