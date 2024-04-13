@@ -14,15 +14,13 @@
 (define (run-study the-study)
   (let loop ([steps (study-steps the-study)])
     (if (null? steps)
-        `(continue ,(current-parameterization))
+        '(continue)
         (match (begin0 (run-step (car steps))
                  (redirect/get/forget))
-          [`(continue ,paramz)
-           (call-with-parameterization paramz
-             (λ () (loop (cdr steps))))]
-          [`(retry ,paramz)
-           (call-with-parameterization paramz
-             (λ () (loop steps)))]
+          ['(continue)
+           (loop (cdr steps))]
+          ['(retry)
+           (loop steps)]
           [(? response? r)
            (send/back r)]))))
 
@@ -41,7 +39,7 @@
     ([href ,((current-embed/url)
              (lambda (_req)
                (action)
-               `(continue ,(current-parameterization))))])
+               '(continue)))])
     ,label))
 
 (define (form e [action (λ (_req) #t)])
@@ -49,7 +47,7 @@
     ([action ,((current-embed/url)
                (lambda (req)
                  (if (action req)
-                     `(continue ,(current-parameterization))
-                     `(retry ,(current-parameterization)))))]
+                     '(continue)
+                     '(retry))))]
      [method "POST"])
     ,e))
