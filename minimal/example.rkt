@@ -1,7 +1,7 @@
 #lang racket/base
 
-(require threading
-         web-server/http
+(require racket/match
+         (except-in web-server/formlets button)
          "study.rkt")
 
 (provide
@@ -14,27 +14,21 @@
     ,(button "Continue")))
 
 (define (get-details)
+  (define details-formlet
+    (formlet
+     (div
+      (label "Name:" ,{input-string . => . name})
+      (label "Age:" ,{input-string . => . age})
+      (button ([type "submit"]) "Continue"))
+     (list name age)))
   `(div
     (h1 "Tell us about yourself")
     ,(form
-      `(div
-        (label "Name:" (input ([name "name"] [type "text"])))
-        (label "Age:" (input ([name "age"] [type "number"])))
-        (button ([type "submit"]) "Continue"))
+      `(div ,@(formlet-display details-formlet))
       (lambda (req)
-        (define bindings (request-bindings/raw req))
-        (define name
-          (and~>
-           (bindings-assq #"name" bindings)
-           (binding:form-value)
-           (bytes->string/utf-8)))
-        (define age
-          (and~>
-           (bindings-assq #"age" bindings)
-           (binding:form-value)
-           (bytes->string/utf-8)
-           (string->number)))
-        (and name age (> age 0) (< age 100))))))
+        (match-define (list name (app string->number age))
+          (formlet-process details-formlet req))
+        (and name age (>= age 0) (< age 100))))))
 
 (define (done)
   `(div
