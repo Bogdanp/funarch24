@@ -74,7 +74,7 @@ ones defined in @figure-ref{minimal-2} to put together a study. The
 study can then be run from within a Racket web server servlet by passing
 it to @racket[run-study].
 
-@figure[
+@figure-here[
   "minimal-1"
   "A mini Congame implementation."
   @racketblock0[
@@ -110,7 +110,7 @@ the continuation is removed from the hash table to prevent the user
 from pressing the ``Back'' button in their browser and redoing previous
 steps.
 
-@figure[
+@figure-here[
   "minimal-2"
   @elem{Core ``widgets'' used in steps.}
   @racketblock0[
@@ -134,7 +134,7 @@ steps.
 @Figure-ref{example} shows a basic study implemented using this
 framework.
 
-@figure[
+@figure-here[
   "example"
   @elem{An example study.}
   @racketblock0[
