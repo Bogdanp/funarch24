@@ -68,3 +68,15 @@
                #:pages '(56 63))
    #:url "https://ieeexplore.ieee.org/abstract/document/4302687/"
    #:date "2007"))
+
+(define b:queinnec
+  (make-bib
+   #:title "Inverting back the inversion of control or, continuations versus page-centric programming"
+   #:author (authors "Christian Queinnec")
+   #:location (journal-location
+               "ACM SIGPLAN Notices"
+               #:volume 38
+               #:pages '(57 64))
+   #:url "https://dl.acm.org/doi/10.1145/772970.772977"
+   #:doi "10.1145/772970.772977"
+   #:date "2003"))
