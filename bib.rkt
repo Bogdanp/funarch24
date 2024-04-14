@@ -21,6 +21,34 @@
                #:number "PLT-TR-2010-1")
    #:url "https://racket-lang.org/tr1/"))
 
+(define b:delimited-composable-control
+  (make-bib
+	#:title "Adding delimited and composable control to a production programming environment"
+	#:author (authors
+              "Matthew Flatt"
+              "Gang Yu"
+              "Robert Bruce Findler"
+              "Matthias Felleisen")
+	#:location (journal-location
+                "ACM SIGPLAN Notices"
+                #:volume 42
+                #:pages '(165 176))
+	#:url "https://dl.acm.org/doi/10.1145/1291220.1291178"
+	#:doi "10.1145/1291220.1291178"
+	#:date "2007"))
+
+(define b:queinnec
+  (make-bib
+   #:title "Inverting back the inversion of control or, continuations versus page-centric programming"
+   #:author (authors "Christian Queinnec")
+   #:location (journal-location
+               "ACM SIGPLAN Notices"
+               #:volume 38
+               #:pages '(57 64))
+   #:url "https://dl.acm.org/doi/10.1145/772970.772977"
+   #:doi "10.1145/772970.772977"
+   #:date "2003"))
+
 (define b:web-server
   (make-bib
    #:title "Implementation and use of the PLT scheme Web server"
@@ -39,22 +67,6 @@
    #:url "https://doi.org/10.1007/s10990-007-9008-y"
    #:doi "10.1007/s10990-007-9008-y"))
 
-(define b:delimited-composable-control
-  (make-bib
-	#:title "Adding delimited and composable control to a production programming environment"
-	#:author (authors
-              "Matthew Flatt"
-              "Gang Yu"
-              "Robert Bruce Findler"
-              "Matthias Felleisen")
-	#:location (journal-location
-                "ACM SIGPLAN Notices"
-                #:volume 42
-                #:pages '(165 176))
-	#:url "https://dl.acm.org/doi/10.1145/1291220.1291178"
-	#:doi "10.1145/1291220.1291178"
-	#:date "2007"))
-
 (define b:seaside
   (make-bib
    #:title "Seaside: A flexible environment for building dynamic web applications"
@@ -68,15 +80,3 @@
                #:pages '(56 63))
    #:url "https://ieeexplore.ieee.org/abstract/document/4302687/"
    #:date "2007"))
-
-(define b:queinnec
-  (make-bib
-   #:title "Inverting back the inversion of control or, continuations versus page-centric programming"
-   #:author (authors "Christian Queinnec")
-   #:location (journal-location
-               "ACM SIGPLAN Notices"
-               #:volume 38
-               #:pages '(57 64))
-   #:url "https://dl.acm.org/doi/10.1145/772970.772977"
-   #:doi "10.1145/772970.772977"
-   #:date "2003"))

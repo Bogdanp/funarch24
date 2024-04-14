@@ -2,6 +2,7 @@
 
 @(require scribble/core
           scriblib/figure
+          scriblib/footnote
           (only-in scribble/manual racket racketblock racketblock0)
           "bib.rkt")
 
@@ -70,9 +71,9 @@ retrieve information to and from the participant being surveyed.
 @Figure-ref{minimal-1} implements a minimal harness for constructing
 and running these types of studies. A study creator uses the structures
 defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
-one defined in @figure-ref{minimal-2} to put together a study. The
-study can then be run from within a Racket web server servlet with
-@racket[run-study].
+one defined in @figure-ref{minimal-2} to put together a study. The study
+can then be run from within a Racket @~cite[b:racket] web server servlet
+with @racket[run-study].
 
 @figure-here[
   "minimal-1"
@@ -141,6 +142,36 @@ framework.
       (step done))))]]
 
 @section[#:tag "challenges"]{Challenges}
+
+@subsection{Too Few or Too Many Parameters}
+
+In addition to the functionality presented in @secref{minimal}, Congame
+tracks participants' progress through each study in a database in order
+to make it possible for them to resume their progress when necessary
+(eg. when they close the browser tab and come back to the website, or
+after their continuations expire, or after a server re-deployment). To
+facilitate this, Congame keeps track of an in-memory ``study stack''
+per participant that is serialized to the database after every step.
+This stack is stored using dynamic variables (@emph{parameters} in
+Racket parlance @~cite[b:delimited-composable-control]). In some cases,
+continuations interact with parameters in surprsing ways.
+
+@(define issue-4216
+   (note (url "https://github.com/racket/racket/issues/4216")))
+
+When a continuation URL is visited and the continuation is restored,
+it is run in a fresh Racket thread. Typically, when a Racket thread
+is launched, it inherits the parameterization of its parent thread.
+That is, if a parameter is set to one value in the parent, it will be
+set to the same value in the child thread. When @racket[parameterize]
+is used to change the value of a parameter for a particular block of
+code, instead of storing each new parameter value individually, a
+parameterization object is extended@|issue-4216| to include the new
+values of the changed parameters. So, when @racket[parameterize] is
+used within a continuation and that continuation is later restored in a
+thread, more parameters than one might expect may end up being restored,
+because the aforementioned extended parameterization object is installed
+alongside it.
 
 @section[#:tag "positives"]{Positives} @; Needs better title
 
