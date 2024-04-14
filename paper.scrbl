@@ -70,7 +70,7 @@ possibly retrieve information to and from the user being surveyed.
 @Figure-ref{minimal-1} implements a minimal harness for constructing
 and running these types of studies. A study creator uses the structures
 defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
-ones defined in @figure-ref{minimal-2} to put together a study. The
+one defined in @figure-ref{minimal-2} to put together a study. The
 study can then be run from within a Racket web server servlet with
 @racket[run-study].
 
@@ -111,7 +111,7 @@ steps.
 
 @figure-here[
   "minimal-2"
-  @elem{Core ``widgets'' used in steps.}
+  @elem{A button ``widget''.}
   @racketblock0[
   (define (button label [action void])
     `(a
@@ -119,16 +119,7 @@ steps.
                (lambda (_req)
                  (action)
                  '(continue)))])
-      ,label))
-  (define (form e [action (λ (_req) #t)])
-    `(form
-      ([action ,((current-embed)
-                 (lambda (req)
-                   (if (action req)
-                       '(continue)
-                       '(retry))))]
-       [method "POST"])
-      ,e))]]
+      ,label))]]
 
 @Figure-ref{example} shows a basic study implemented using this
 framework.
