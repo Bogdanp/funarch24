@@ -17,12 +17,8 @@
         '(continue)
         (match (begin0 (run-step (car steps))
                  (redirect/get/forget))
-          ['(continue)
-           (loop (cdr steps))]
-          ['(retry)
-           (loop steps)]
-          [(? response? r)
-           (send/back r)]))))
+          ['(continue) (loop (cdr steps))]
+          ['(retry) (loop steps)]))))
 
 (define (run-step the-step)
   (match the-step

@@ -71,8 +71,8 @@ possibly retrieve information to and from the user being surveyed.
 and running these types of studies. A study creator uses the structures
 defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
 ones defined in @figure-ref{minimal-2} to put together a study. The
-study can then be run from within a Racket web server servlet by passing
-it to @racket[run-study].
+study can then be run from within a Racket web server servlet with
+@racket[run-study].
 
 @figure-here[
   "minimal-1"
@@ -88,8 +88,7 @@ it to @racket[run-study].
           (match (begin0 (run-step (car steps))
                    (redirect/get/forget))
             ['(retry) (loop steps)]
-            ['(continue) (loop (cdr steps))]
-            [(? response? r) (send/back r)]))))
+            ['(continue) (loop (cdr steps))]))))
   (define (run-step the-step)
     (match the-step
       [(step (? study? substudy))
