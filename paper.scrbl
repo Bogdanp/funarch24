@@ -6,7 +6,7 @@
           (only-in scribble/manual racket racketblock racketblock0)
           "bib.rkt")
 
-@title{Unnamed Continuations Paper}
+@title{Continuations: what have they ever done for us?}
 @subtitle{Experience Report}
 
 @author[
