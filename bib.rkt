@@ -80,3 +80,18 @@
                #:pages '(56 63))
    #:url "https://ieeexplore.ieee.org/abstract/document/4302687/"
    #:date "2007"))
+
+(define b:oTree
+  (make-bib
+	#:title "oTree—An open-source platform for laboratory, online, and field experiments"
+    #:author (authors
+              "Daniel L. Chen"
+              "Martin Schonger"
+              "Chris Wickens")
+    #:location (journal-location
+                "Journal of Behavioral and Experimental Finance"
+                #:volume 9
+                #:pages '(88 97))
+	#:url  "https://www.sciencedirect.com/science/article/pii/S2214635016000101"
+    #:doi "10.1016/j.jbef.2015.12.001"
+    #:date "2016"))

@@ -33,33 +33,51 @@
   Surveys and experiments in economics involve stateful interactions:
   participants receive different messages based on earlier answers,
   choices, and performance, or trade across many rounds with other
-  participants. In the design of congame, a platform for running such
+  participants. In the design of Congame, a platform for running such
   economic studies, we decided to use delimited continuations to
-  manage the common (Marc: want to highlight that it is not how all
-  state is managed, but default) flow of participants through a study.
+  manage the common flow of participants through a study.
   Here we report on the positives of this approach, as well as some
   challenges of using continuations, such as persisting and releasing
   values/bindings [at the right time/across requests], avoiding memory
-  leaks, and the difficulty of debugging continuations. [Lessons?
-  Discussion about patterns?]
+  leaks, and the difficulty of debugging continuations.
 }
 
 @section[#:tag "intro"]{Introduction}
 
+Notes/Questions:
+
+* Vocabulary in intro (later is clearer): study/survey/experiment;
+  state/progress (for participant)
+* Not sure about my way of citing oTree, I find it weird to just have the
+  number, but it seems common in CS.
+
 Continuations in a web context allow applications to be programmed in a
 direct style @~cite[b:queinnec b:web-server]. In Congame, we have opted
-to take advantage of this style of programming to aid our implementation
-of a framework for declaratively specifying composable surveys in a way
+to take advantage of this style of programming to implement
+a framework for specifying composable surveys in a declarative way
 that elides most of the details of day-to-day web programming from the
 study creator.
 
-In @secref{minimal} we show a minimal implementation of a system
-similar to Congame and demonstrate how natural it is to program web
-applications in this style. Then, in @secref{challenges} we talk about
-some of the challenges involved in scaling such a system to include
-more features and illustrate some of the debugging challenges. Finally,
-in @secref{positives}, we note some of the positive experiences we've
-had working on this system, and explore similarities to related work in
+Furthermore, Congame is aimed towards building studies: stateful applications
+where a participant moves from one step to the next, which may depend on their
+own actions, those of other participants, or the treatment they are assigned.
+For example, a particpant may only continue in a study if they pass a
+comprehension test showing that they understood the instructions; some
+participants may be randomly assigned to solve 5 puzzles, others to solve 10.
+Continuations are particularly helpful to automatically keep track of and manage
+the current state of a participant, freeing the study creator from this tedious
+and error-prone task, and thereby enabling more composable and reusable studies.
+[Marc: I feel we have to provide a bit of extra context on congame in the intro,
+but maybe this whole part belongs elsewhere.]
+
+In @secref{minimal} we show a minimal implementation of a system similar to
+Congame and demonstrate how natural it is to program web applications in this
+style. Then, in @secref{challenges} we talk about some of the challenges
+involved in scaling such a system to include more features and illustrate some
+of the debugging challenges. Finally, in @secref{positives}, we note some of the
+positive experiences we've had working on this system both for extending the
+core functionality and for building studies compared to other frameworks (e.g.,
+@~cite[b:oTree]). Finally, we explore similarities to related work in
 @secref{related}.
 
 @section[#:tag "minimal"]{Mini Congame}
