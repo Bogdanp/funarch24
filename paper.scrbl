@@ -169,13 +169,41 @@ of their parent threads. That is, if a parameter is set to one value
 in the parent, it will be set to the same value in the child thread.
 When @racket[parameterize] is used to change the value of a parameter
 for a particular block of code, instead of storing each new parameter
-value in a thread cell individually, the existing parameterization
-object is extended@|issue-4216| to include the new values of the changed
+value in a thread cell individually, a parameterization object is
+extended@|issue-4216| to include the new values of the changed
 parameters. As a consequence, when @racket[parameterize] is used within
 the dynamic extent of a continuation and that continuation is later
 restored in a thread, more parameters than one might expect may end up
 being restored, because the aforementioned extended parameterization
 object is installed alongside it.
+
+@Figure-ref{challenge-1} shows an example of the issue mentioned
+above. When run, the program in figure 4 displays @tt{a b}, despite
+the fact that the continuation is captured up to a prompt that resides
+within the outer @racket[parameterize] form. Removing the inner use of
+@racket[parameterize] would cause the program to display @tt{#f #f}.
+
+@figure-here[
+  "challenge-1"
+  @elem{An example of the parameter revival issue.}
+  @racketblock0[
+  (define a (make-parameter #f))
+  (define b (make-parameter #f))
+  (define tag (make-continuation-prompt-tag))
+  (define k
+    (parameterize ([a 'a])
+      (call-with-continuation-prompt
+       (lambda ()
+         (parameterize ([b 'b])
+           ((call-with-current-continuation
+             (λ (k) (thunk k))
+             tag))))
+       tag)))
+  (call-with-continuation-prompt
+   (lambda ()
+     (k (lambda ()
+          (printf "~s ~s~n" (a) (b)))))
+   tag)]]
 
 On the opposite side of the coin, Because the Racket web server restores
 continuations in fresh threads, it is also possible to ``lose'' changes
