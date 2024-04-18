@@ -148,33 +148,45 @@ implemented using this framework.
 
 @subsection{Too Few or Too Many Parameters}
 
-In addition to the functionality presented in @secref{minimal}, Congame
-tracks participants' progress through each study in a database in order
-to make it possible for them to resume their progress when necessary
-(eg. when they close the browser tab and come back to the website, or
-after their continuations expire, or after a server re-deployment). To
-facilitate this, Congame keeps track of an in-memory ``study stack''
-per participant that is serialized to the database after every step.
-This stack is stored using dynamic variables (@emph{parameters} in
-Racket parlance @~cite[b:delimited-composable-control]). In some cases,
-continuations interact with parameters in surprsing ways.
+In addition to the functionality presented in @secref{minimal},
+Congame tracks participants' progress through each study in a database
+in order to make it possible for them to resume their progress when
+necessary (eg. when they close the browser tab and come back to the
+website, or after their continuations expire, or after a server
+re-deployment). To facilitate this, Congame keeps track of an in-memory
+``study stack'' per participant that is serialized to the database
+after every step. This stack is stored using dynamic variables
+(@emph{parameters}@~cite[b:delimited-composable-control] in Racket
+parlance). In some cases, continuations interact with parameters in
+surprsing ways.
 
 @(define issue-4216
    (note (url "https://github.com/racket/racket/issues/4216")))
 
-When a continuation URL is visited and the continuation is restored,
-it is run in a fresh Racket thread. Typically, when a Racket thread
-is launched, it inherits the parameterization of its parent thread.
-That is, if a parameter is set to one value in the parent, it will be
-set to the same value in the child thread. When @racket[parameterize]
-is used to change the value of a parameter for a particular block of
-code, instead of storing each new parameter value individually, a
-parameterization object is extended@|issue-4216| to include the new
-values of the changed parameters. So, when @racket[parameterize] is
-used within a continuation and that continuation is later restored in a
-thread, more parameters than one might expect may end up being restored,
-because the aforementioned extended parameterization object is installed
-alongside it.
+When a continuation URL is visited and the continuation is restored, it
+is run in a fresh Racket thread. Racket threads inherit the parameters
+of their parent threads. That is, if a parameter is set to one value
+in the parent, it will be set to the same value in the child thread.
+When @racket[parameterize] is used to change the value of a parameter
+for a particular block of code, instead of storing each new parameter
+value in a thread cell individually, the existing parameterization
+object is extended@|issue-4216| to include the new values of the changed
+parameters. As a consequence, when @racket[parameterize] is used within
+the dynamic extent of a continuation and that continuation is later
+restored in a thread, more parameters than one might expect may end up
+being restored, because the aforementioned extended parameterization
+object is installed alongside it.
+
+On the opposite side of the coin, Because the Racket web server restores
+continuations in fresh threads, it is also possible to ``lose'' changes
+to a parameter when using direct assignment. Directly assigning a
+parameter in a thread records the change to the parameter in a thread
+cell, without affecting the current parameterization. While implementing
+congame, we naively used direct assignment to update the state of
+the study stack, which lead to the parameter seemingly being reset
+at certain times. To work around this issue, we modified the study
+harness to explicitly pass around the current parameterization as the
+participant progresses through the study.
 
 @section[#:tag "positives"]{Positives} @; Needs better title
 
