@@ -69,17 +69,6 @@ to related work in @secref{related}.
 
 @section[#:tag "minimal"]{Mini Congame}
 
-The core of Congame is a @emph{study}, represented as a tree of
-@emph{steps} and other, nested, studies. Each @emph{step} in a study
-is a procedure that generates a web page used to display and possibly
-retrieve information to and from the participant being surveyed.
-@Figure-ref{minimal-1} implements a minimal harness for constructing
-and running these types of studies. A study creator uses the structures
-defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
-one defined in @figure-ref{minimal-2} to put together a study. The study
-can then be run from within a Racket @~cite[b:racket] web server servlet
-with @racket[run-study].
-
 @figure-here[
   "minimal-1"
   "A mini Congame implementation."
@@ -105,15 +94,16 @@ with @racket[run-study].
           (parameterize ([current-embed embed])
             (response/xexpr (handler)))))]))]]
 
-When a study is run, its steps are executed sequentially, and when a
-step uses a widget, the widget reifies the current continuation of the
-step and stores it in a hash table that maps URLs to continuations.
-The URL of that continuation is then linked in the resulting HTML.
-Once a continuation URL is visited, @racket[run-step] returns and the
-study loop can continue to the next step. Once a continuation URL is
-visited, the continuation is removed from the hash table to prevent
-the participant from pressing the ``Back'' button in their browser and
-redoing previous steps.
+The core of Congame is a @emph{study}, represented as a tree of
+@emph{steps} and other, nested, studies. Each @emph{step} in a study
+is a procedure that generates a web page used to display and possibly
+retrieve information to and from the participant being surveyed.
+@Figure-ref{minimal-1} implements a minimal harness for constructing
+and running these types of studies. A study creator uses the structures
+defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
+one defined in @figure-ref{minimal-2} to put together a study. The study
+can then be run from within a Racket @~cite[b:racket] web server servlet
+with @racket[run-study].
 
 @figure-here[
   "minimal-2"
@@ -127,8 +117,16 @@ redoing previous steps.
                  '(continue)))])
       ,label))]]
 
-@Figure-ref{example} shows a basic study implemented using this
-framework.
+When a study is run, its steps are executed sequentially, and when a
+step uses a widget, the widget reifies the current continuation of the
+step and stores it in a hash table that maps URLs to continuations.
+The URL of that continuation is then linked in the resulting HTML.
+Once a continuation URL is visited, @racket[run-step] returns and the
+study loop can continue to the next step. Once a continuation URL is
+visited, the continuation is removed from the hash table to prevent
+the participant from pressing the ``Back'' button in their browser and
+redoing previous steps. @Figure-ref{example} shows a basic study
+implemented using this framework.
 
 @figure-here[
   "example"
