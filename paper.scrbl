@@ -188,15 +188,6 @@ at certain times. To work around this issue, we modified the study
 harness to explicitly pass around the current parameterization as the
 participant progresses through the study.
 
-@section[#:tag "positives"]{Positives} @; Needs better title
-
-@; Positives in extending the core functionality and in building studies
-@; compared to other frameworks (e.g.,@~cite[b:oTree]).
-@; Automatic state management reduces the scope for errors and enables
-@; composable and reusable studies.
-
-@section[#:tag "related"]{Related Work}
-
 @; * Interaction between web-server continuations and parameterizations.
 @; When the web-server continues a request, the request is launched in
 @; a new thread so the paramz of the thread where the continuation was
@@ -218,8 +209,13 @@ participant progresses through the study.
 @; For all 3, talk about how we debugged the issues and tools needed to
 @; make debugging easier. Would be nice to have a proper debugger that
 @; can walk the ``stack''.
-@;
-@; @section{Positives}
+
+@section[#:tag "positives"]{Positives} @; Needs better title
+
+@; Positives in extending the core functionality and in building studies
+@; compared to other frameworks (e.g.,@~cite[b:oTree]).
+@; Automatic state management reduces the scope for errors and enables
+@; composable and reusable studies.
 @;
 @; * Natural to write flows without needing to worry too much about storing
 @; intermediate state anywhere (except for ``resuming''). When talking
@@ -235,5 +231,7 @@ participant progresses through the study.
 @; * Is there any aspect of the composition of studies that is easier because we
 @;   use continuations, or would it have been equally easy with other ways of flow
 @;   control? My guess is that it doesn't.
+
+@section[#:tag "related"]{Related Work}
 
 @(generate-bibliography #:sec-title "References")
