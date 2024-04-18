@@ -178,10 +178,10 @@ being restored, because the aforementioned extended parameterization
 object is installed alongside it.
 
 @Figure-ref{challenge-1} shows an example of the issue mentioned
-above. When run, the program in figure 4 displays @tt{a b}, despite
-the fact that the continuation is captured up to a prompt that resides
+above. When run, the program in figure 4 displays ``a b'', despite the
+fact that the continuation is captured up to a prompt that resides
 within the outer @racket[parameterize] form. Removing the inner use of
-@racket[parameterize] would cause the program to display @tt{#f #f}.
+@racket[parameterize] would cause the program to display ``#f #f''.
 
 @figure-here[
   "challenge-1"
@@ -210,11 +210,44 @@ continuations in fresh threads, it is also possible to ``lose'' changes
 to a parameter when using direct assignment. Directly assigning a
 parameter in a thread records the change to the parameter in a thread
 cell, without affecting the current parameterization. While implementing
-congame, we naively used direct assignment to update the state of
+congame, we naïvely used direct assignment to update the state of
 the study stack, which lead to the parameter seemingly being reset
 at certain times. To work around this issue, we modified the study
 harness to explicitly pass around the current parameterization as the
 participant progresses through the study.
+
+@figure-here[
+  "challenge-2"
+  @elem{An example of the parameter loss issue.}
+  @racketblock0[
+  (define p (make-parameter #f))
+  (define tag (make-continuation-prompt-tag))
+  (define k-ch (make-channel))
+  (void
+   (thread
+    (lambda ()
+      (call-with-continuation-prompt
+       (lambda ()
+         (parameterize ([p 'p1])
+           (p 'p2)
+           ((call-with-current-continuation
+             (lambda (k)
+               (thunk (channel-put k-ch k)))
+             tag))))
+       tag))))
+  (thread-wait
+   (thread
+    (lambda ()
+      (define k (channel-get k-ch))
+      (call-with-continuation-prompt
+       (lambda ()
+         (k (λ () (printf "~s~n" (p)))))
+       tag))))]]
+
+@Figure-ref{challenge-2} demonstrates the parameter loss issue. When
+the continuation from the first thread is restored in the second, the
+direct assignment to the parameter is lost and the program displays
+``p1''.
 
 @; * Interaction between web-server continuations and parameterizations.
 @; When the web-server continues a request, the request is launched in
