@@ -23,19 +23,19 @@
 
 (define b:delimited-composable-control
   (make-bib
-	#:title "Adding delimited and composable control to a production programming environment"
-	#:author (authors
-              "Matthew Flatt"
-              "Gang Yu"
-              "Robert Bruce Findler"
-              "Matthias Felleisen")
-	#:location (journal-location
-                "ACM SIGPLAN Notices"
-                #:volume 42
-                #:pages '(165 176))
-	#:url "https://dl.acm.org/doi/10.1145/1291220.1291178"
-	#:doi "10.1145/1291220.1291178"
-	#:date "2007"))
+   #:title "Adding delimited and composable control to a production programming environment"
+   #:author (authors
+             "Matthew Flatt"
+             "Gang Yu"
+             "Robert Bruce Findler"
+             "Matthias Felleisen")
+   #:location (journal-location
+               "ACM SIGPLAN Notices"
+               #:volume 42
+               #:pages '(165 176))
+   #:url "https://dl.acm.org/doi/10.1145/1291220.1291178"
+   #:doi "10.1145/1291220.1291178"
+   #:date "2007"))
 
 (define b:queinnec
   (make-bib
@@ -83,15 +83,15 @@
 
 (define b:oTree
   (make-bib
-	#:title "oTree—An open-source platform for laboratory, online, and field experiments"
-    #:author (authors
-              "Daniel L. Chen"
-              "Martin Schonger"
-              "Chris Wickens")
-    #:location (journal-location
-                "Journal of Behavioral and Experimental Finance"
-                #:volume 9
-                #:pages '(88 97))
-	#:url  "https://www.sciencedirect.com/science/article/pii/S2214635016000101"
-    #:doi "10.1016/j.jbef.2015.12.001"
-    #:date "2016"))
+   #:title "oTree—An open-source platform for laboratory, online, and field experiments"
+   #:author (authors
+             "Daniel L. Chen"
+             "Martin Schonger"
+             "Chris Wickens")
+   #:location (journal-location
+               "Journal of Behavioral and Experimental Finance"
+               #:volume 9
+               #:pages '(88 97))
+   #:url  "https://www.sciencedirect.com/science/article/pii/S2214635016000101"
+   #:doi "10.1016/j.jbef.2015.12.001"
+   #:date "2016"))
