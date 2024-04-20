@@ -51,13 +51,18 @@ a framework for specifying composable surveys in a declarative way
 that elides most of the details of day-to-day web programming from the
 study creator.
 
-This style provides a natural way to track and manage the state of a
-participant progressing through a study. Such studies are stateful
-applications where a participant's next step may depend on random
-treatments --- A/B tests --- or their own or other participants' actions.
-For example, a participant may only be allowed to move on if they pass a
-comprehension test, and their payoff may be co-determined by other
-participants with whom they interact in market games.
+(define greenspun-fn
+  (note "To riff on Greenspun's Tenth Rule."))
+
+In particular, Congame automatically tracks and manages much of the state
+of study participants, which is a big boon, since Congame studies are
+inherently stateful applications. A participant's next step may depend
+on random treatments --- A/B tests --- or their own or other participants'
+actions: they may only be allowed to move on if they pass a comprehension
+test, and their payoff may be co-determined by other participants with whom
+they interact in market games. Congame thus frees the study creator from
+having to implement their own ad hoc bug-ridden state management
+system.@|greenspun-fn|
 
 In @secref{minimal} we show a minimal implementation of a system similar to
 Congame and demonstrate how natural it is to program web applications in this
@@ -158,7 +163,7 @@ re-deployment). To facilitate this, Congame keeps track of an in-memory
 after every step. This stack is stored using dynamic variables
 (@emph{parameters}@~cite[b:delimited-composable-control] in Racket
 parlance). In some cases, continuations interact with parameters in
-surprsing ways.
+surprising ways.
 
 @(define issue-4216
    (note (url "https://github.com/racket/racket/issues/4216")))
@@ -272,6 +277,70 @@ direct assignment to the parameter is lost and the program displays
 @; can walk the ``stack''.
 
 @section[#:tag "positives"]{Positives} @; Needs better title
+
+@; Enabler, opportunities, benefits, wins, gains, features, multiplier
+@; State management made easy
+@; Stepping through with swagger
+
+@; TODO: I (Marc) started writing something about how state management
+@; is made easy through continuations, which is important since tracking
+@; the state is one of the central design features from which most
+@; other features flow (composability, scopes of variables and avoiding
+@; to overwrite values). But now I am not sure that this is much of a
+@; feature or not, or rather, whether the continuations are crucial/enabling
+@; in some sense or not.
+
+Fundamentally:
+
+1. Continuations can close over arbitrary code [wrong wording], so we do not have to deal with
+storing and restoring the entire context. If we had, we might have been
+tempted to put constraints on the kinds of things that studies could do. => easy data
+2. Continuations make it easy to step through the study and `continue` (literally
+, in both senses) after finishing the next step. => easier logic
+3. Since continuations capture arbitrary objects, we were free to make changes to
+the data structure as our needs changed, without having to refactor or redesign
+the core. Example: dynamic studies. Are view-handlers another feature? With
+serialization, we would have had to also figure out how to serialize view-handlers
+etc.
+4. Maybe?: Marc believes that by allowing steps to be effectively arbitrary
+functions (handlers have full power of racket) and having dynamic studies, we gained
+a lot in expressibility and composability. Had we had to store our own data structures,
+we would have had to come up with new means of composition.
+5. Maybe?: how would we have implemented `defvar`, does that fall under 3?
+
+
+@;[Marc: The following assumes that the state management/tracking of state was
+@;simplified/enabled by continuations.]
+@;[Marc: even resuming is still simpler (?), since it doesn't need to recreate parent
+@;studies when `continue`ing, so we only need to be able to walk the tree down.]
+@;Congame was designed to create stateful studies, so it is important that it
+@;provides some state management out of the box, while making it easy for
+@;a study creator to extend it for more complicated situations.
+@;
+@;By default, Congame therefore keeps track of the current state by storing
+@;the name of the current step within the current study, as well as the
+@;stack of parent studies. Continuations make it particularly easy to step
+@;through a study, since they store where to continue after the step is done.
+@;We can thus enter substudies and resume where we left off, without us having
+@;to store (and potentially serialize) all the context needed. [Marc: this is
+@;primarily, or entirely, the study and current location within it, since we
+@;store nothing else in memory, right?]
+@;
+@;There are two unanticipated benefits that flowed from our use of continuations
+@;to step through the study. First, since continuations do all the heavy lifting
+@;of storing the entire study and where to continue after completing the next step,
+@;we were free to make changes to the data structure of studies and steps without
+@;having to change the core of the study-runner in major ways. Our core data
+@;structure was thus easy to change and did not refrain from making changes out
+@;of fear that we would either break code or have to refactor large chunks of
+@;the core. @; Find examples of this.
+@;
+@;Second, since continuations can store arbitrary code, we were able to implement
+@;dynamic studies. @; find examples of how long this took us or how much had to change
+
+
+@; TODO: How is resuming with continuations easier than without? Couldn't
+@; we resume just as simply otherwise?
 
 @; Positives in extending the core functionality and in building studies
 @; compared to other frameworks (e.g.,@~cite[b:oTree]).
