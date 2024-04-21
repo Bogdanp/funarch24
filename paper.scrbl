@@ -51,8 +51,8 @@ a framework for specifying composable surveys in a declarative way
 that elides most of the details of day-to-day web programming from the
 study creator.
 
-(define greenspun-fn
-  (note "To riff on Greenspun's Tenth Rule."))
+@(define greenspun-fn
+   (note "To riff on Greenspun's Tenth Rule."))
 
 In particular, Congame automatically tracks and manages much of the state
 of study participants, which is a big boon, since Congame studies are
