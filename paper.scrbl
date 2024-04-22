@@ -254,6 +254,12 @@ the continuation from the first thread is restored in the second, the
 direct assignment to the parameter is lost and the program displays
 ``p1''.
 
+@subsection{Composable VS Delimited Continuations}
+
+
+
+@subsection{Debugging}
+
 @; * Interaction between web-server continuations and parameterizations.
 @; When the web-server continues a request, the request is launched in
 @; a new thread so the paramz of the thread where the continuation was
@@ -290,23 +296,36 @@ direct assignment to the parameter is lost and the program displays
 @; feature or not, or rather, whether the continuations are crucial/enabling
 @; in some sense or not.
 
-Fundamentally:
+Using continuations allows us to progress through the study by
+traversing the tree using regular techniques without having to worry
+much about the fact that we are doing web programming. While traversing
+the tree, we are able to keep track of data structures that follow the
+shape of the tree and, thereby, construct a ``study stack'' that allows
+us to store participant data in a way that imitates lexical scope,
+making it very natural for study writers to keep track of local data.
 
-1. Continuations can close over arbitrary code [wrong wording], so we do not have to deal with
-storing and restoring the entire context. If we had, we might have been
-tempted to put constraints on the kinds of things that studies could do. => easy data
-2. Continuations make it easy to step through the study and `continue` (literally
-, in both senses) after finishing the next step. => easier logic
-3. Since continuations capture arbitrary objects, we were free to make changes to
-the data structure as our needs changed, without having to refactor or redesign
-the core. Example: dynamic studies. Are view-handlers another feature? With
-serialization, we would have had to also figure out how to serialize view-handlers
-etc.
-4. Maybe?: Marc believes that by allowing steps to be effectively arbitrary
-functions (handlers have full power of racket) and having dynamic studies, we gained
-a lot in expressibility and composability. Had we had to store our own data structures,
-we would have had to come up with new means of composition.
-5. Maybe?: how would we have implemented `defvar`, does that fall under 3?
+@; Counter |-> Decrement
+@;         \-> Increment
+
+Using continuations allows us to use regular control flow
+@~cite[b:queinnec], meaning that every step of a study can decide
+locally what the participant can do next. The actions in a step can
+close over the step's environment and use regular functional
+programming techniques.
+
+Since our approach is data-driven, changing our data structures requires
+minor changes to our harness. Allowing dynamic studies was as simple
+as adding one more case to @racket[run-study] to handle callable study
+struct instances. Generally, the design is flexible to changes. For
+instance, adding support for view handlers meant extending the step
+struct with another field and adding one more request handler to
+traverse the study tree and display those handlers as
+necessary. Furthermore, the data-driven nature of the studies allows
+us to easily compose studies together just as we would any other
+tree-like data structure and use the full suite of Racket's facilities
+when programming (higher-order studies ...).
+
+@; Marc: compare to otree
 
 
 @;[Marc: The following assumes that the state management/tracking of state was
