@@ -46,31 +46,31 @@
 
 Continuations in a web context allow applications to be programmed in a
 direct style @~cite[b:queinnec b:web-server]. In Congame, we have opted
-to take advantage of this style of programming to implement
-a framework for specifying composable surveys in a declarative way
-that elides most of the details of day-to-day web programming from the
-study creator.
+to take advantage of this style of programming to implement a framework
+for specifying composable surveys in a declarative way that elides most
+of the details of day-to-day web programming from the study creator.
 
 @(define greenspun-fn
    (note "To riff on Greenspun's Tenth Rule."))
 
-In particular, Congame automatically tracks and manages much of the state
-of study participants, which is a big boon, since Congame studies are
-inherently stateful applications. A participant's next step may depend
-on random treatments --- A/B tests --- or their own or other participants'
-actions: they may only be allowed to move on if they pass a comprehension
-test, and their payoff may be co-determined by other participants with whom
-they interact in market games. Congame thus frees the study creator from
-having to implement their own ad hoc bug-ridden state management
-system.@|greenspun-fn|
+In particular, Congame automatically tracks and manages much of the
+state of study participants, which is a big boon, since Congame studies
+are inherently stateful applications. A participant's next step may
+depend on random treatments --- A/B tests --- or their own or other
+participants' actions: they may only be allowed to move on if they pass
+a comprehension test, and their payoff may be co-determined by other
+participants with whom they interact in market games. Congame thus frees
+the study creator from having to implement their own ad hoc bug-ridden
+state management system.@|greenspun-fn|
 
-In @secref{minimal} we show a minimal implementation of a system similar to
-Congame and demonstrate how natural it is to program web applications in this
-style. Then, in @secref{challenges} we talk about some of the challenges
-involved in scaling such a system to include more features and illustrate some
-of the debugging challenges. Finally, in @secref{positives}, we note some of the
-positive experiences we've had working on this system, and explore similarities
-to related work in @secref{related}.
+In @secref{minimal} we show a minimal implementation of a system
+similar to Congame and demonstrate how natural it is to program web
+applications in this style. Then, in @secref{challenges} we talk about
+some of the challenges involved in scaling such a system to include
+more features and illustrate some of the debugging challenges. Finally,
+in @secref{positives}, we note some of the positive experiences we've
+had working on this system, and explore similarities to related work in
+@secref{related}.
 
 @section[#:tag "minimal"]{Mini Congame}
 
@@ -129,8 +129,8 @@ The URL of that continuation is then linked in the resulting HTML.
 Once a continuation URL is visited, @racket[run-step] returns and the
 study loop can continue to the next step. Once a continuation URL is
 visited, the continuation is removed from the hash table to prevent
-the participant from pressing the ``Back'' button in their browser and
-redoing previous steps. @Figure-ref{example} shows a basic study
+the participant from pressing the ``Back'' button in their browser
+and redoing previous steps. @Figure-ref{example} shows a basic study
 implemented using this framework.
 
 @figure-here[
@@ -249,38 +249,53 @@ participant progresses through the study.
          (k (λ () (printf "~s~n" (p)))))
        tag))))]]
 
-@Figure-ref{challenge-2} demonstrates the parameter loss issue. When
-the continuation from the first thread is restored in the second, the
-direct assignment to the parameter is lost and the program displays
-``p1''.
-
-@subsection{Composable VS Delimited Continuations}
-
-
+@Figure-ref{challenge-2} demonstrates the parameter loss issue. When the
+continuation from the first thread is restored in the second, the direct
+assignment to the parameter is lost and the program displays ``p1''.
 
 @subsection{Debugging}
 
-@; * Interaction between web-server continuations and parameterizations.
-@; When the web-server continues a request, the request is launched in
-@; a new thread so the paramz of the thread where the continuation was
-@; captured are lost.
-@;
-@; * Interaction between parameterizations and continuations. Extending
-@; a parameterization can cause parameters to be kept alive that you
-@; wouldn't expect from the lexical structure of the code when combining
-@; delimited contiunations with parameterizations.
-@;
-@; https://github.com/racket/racket/issues/4216
-@;
-@; * Using composable continuations may lead to ballooning of memory
-@; use when stack continuations that contain non-tail-recursive
-@; functions.
-@;
-@; https://github.com/MarcKaufmann/congame/commit/8cb69a0f869e0f49cd36579605326fbe00938361
-@;
-@; For all 3, talk about how we debugged the issues and tools needed to
-@; make debugging easier. Would be nice to have a proper debugger that
-@; can walk the ``stack''.
+Debugging memory leaks in the presence of continuations is tricky. For
+a while, we had a set of small bugs in different areas of the software
+that were composing together to form a larger bug which led to massive
+memory leaks under load.
+
+Our error reporting library was setting up exception handlers in its
+inner data collection loop, making the loop no longer tail-recursive;
+our own middleware to configure the aforementioned error reporting
+library was accidentally creating a new instance of the error reporter
+per request, instead of reusing a single one, meaning that for every
+new request we would spin up a new data collection thread with a
+non-tail-recursive inner loop. Finally, we were using composable
+continuations to implement a special type of return from a sub-study
+to its parent, so when a participant continued a study at the boundary
+between parent and sub-study, we would see an increase in memory usage
+from stacking the composable continuations on top of each other.
+
+@figure-here[
+  "remote-debugger"
+  "A remote debugger for Racket."
+  @elem{
+    @(image "debugging-1.png" #:scale 0.33)
+    @(image "debugging-2.png" #:scale 0.33)
+  }]
+
+@Figure-ref{remote-debugger} shows what this type of issue looks like
+when visualized using a remote debugging tool available for Racket.
+We can see memory use grow superlinearly and we can see that the main
+culprit appears to be a lot of ``metacontinuation-frame'' values. It
+turns out that in Racket, every stack frame is a metacontinuation
+frame, and because these frames were originating from our composable
+continuations, we were led down the wrong path for a long time, thinking
+that the root cause was somehow our use of composable continuations. In
+the end, switching to delimited-but-not-composable continuations didn't
+fix our problem and we ended up finding the root cause through other
+hints.
+
+@; It turns out the problem here is mainly not to do with
+@; continuations but with our own confusion. Maybe worth bringing up
+@; that the lack of "exercise" (for want of a better word) w/ these
+@; facilities can lead to self doubt and confusion.
 
 @section[#:tag "positives"]{Positives} @; Needs better title
 
@@ -310,20 +325,20 @@ making it very natural for study writers to keep track of local data.
 Using continuations allows us to use regular control flow
 @~cite[b:queinnec], meaning that every step of a study can decide
 locally what the participant can do next. The actions in a step can
-close over the step's environment and use regular functional
-programming techniques.
+close over the step's environment and use regular functional programming
+techniques.
 
 Since our approach is data-driven, changing our data structures requires
 minor changes to our harness. Allowing dynamic studies was as simple
-as adding one more case to @racket[run-study] to handle callable study
-struct instances. Generally, the design is flexible to changes. For
-instance, adding support for view handlers meant extending the step
-struct with another field and adding one more request handler to
-traverse the study tree and display those handlers as
-necessary. Furthermore, the data-driven nature of the studies allows
-us to easily compose studies together just as we would any other
-tree-like data structure and use the full suite of Racket's facilities
-when programming (higher-order studies ...).
+as adding one more case to @racket[run-study] to handle callable
+study struct instances. Generally, the design is flexible to changes.
+For instance, adding support for view handlers meant extending the
+step struct with another field and adding one more request handler
+to traverse the study tree and display those handlers as necessary.
+Furthermore, the data-driven nature of the studies allows us to easily
+compose studies together just as we would any other tree-like data
+structure and use the full suite of Racket's facilities when programming
+(higher-order studies ...).
 
 @; Marc: compare to otree
 
