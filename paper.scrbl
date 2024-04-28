@@ -381,6 +381,6 @@ when programming (higher-order studies ...).
 @;   use continuations, or would it have been equally easy with other ways of flow
 @;   control? My guess is that it doesn't.
 
-@section[#:tag "related"]{Related Work}
+@section[#:tag "related"]{Related Work} @; Maybe we should just have a "Conclusion" section instead?
 
 @(generate-bibliography #:sec-title "References")
