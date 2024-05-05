@@ -282,20 +282,25 @@ from stacking the composable continuations on top of each other.
 
 @Figure-ref{remote-debugger} shows what this type of issue looks like
 when visualized using a remote debugging tool available for Racket.
-We can see memory use grow superlinearly and we can see that the main
-culprit appears to be a lot of ``metacontinuation-frame'' values. It
-turns out that in Racket, every stack frame is a metacontinuation
-frame, and because these frames were originating from our composable
-continuations, we were led down the wrong path for a long time, thinking
-that the root cause was somehow our use of composable continuations. In
-the end, switching to delimited-but-not-composable continuations didn't
-fix our problem and we ended up finding the root cause through other
-hints.
+We can see memory use grow exponentially and we can see that the
+main culprit appears to be the fact that we have allocated a lot of
+``metacontinuation-frame'' values. This led us to our use of composable
+continuations, which we promptly changed to delimited-but-not-composable
+continuations, since we didn't actually need composable continuations
+for our purposes. Our use of composable continuations was acting as an
+amplifier for the other two bugs, and this change seemed to fix the
+issue by drastically reducing the effect of the memory leak. In a way,
+this fix gave us a false sense of security, since the other two problems
+were still lurking, so we were surprised to later run into the same
+problem again. Eventually, we were able to find the root problems and
+fix them.
 
-@; It turns out the problem here is mainly not to do with
-@; continuations but with our own confusion. Maybe worth bringing up
-@; that the lack of "exercise" (for want of a better word) w/ these
-@; facilities can lead to self doubt and confusion.
+Since we use facilities like continuations infrequently it's easy for
+us to misuse them or to doubt our own understanding of how things are
+supposed to work.
+
+@; I think this ^ is a point worth making, but maybe we should move it
+@; elsewhere.
 
 @section[#:tag "positives"]{Positives} @; Needs better title
 
