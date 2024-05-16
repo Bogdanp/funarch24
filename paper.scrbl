@@ -56,7 +56,7 @@ of the details of day-to-day web programming from the study creator.
 In particular, Congame automatically tracks and manages much of the
 state of study participants, which is a big boon, since Congame studies
 are inherently stateful applications. A participant's next step may
-depend on random treatments --- A/B tests --- or their own or other
+depend on random treatments --- as in A/B tests --- or their own or other
 participants' actions: they may only be allowed to move on if they pass
 a comprehension test, and their payoff may be co-determined by other
 participants with whom they interact in market games. Congame thus frees
@@ -68,9 +68,9 @@ similar to Congame and demonstrate how natural it is to program web
 applications in this style. Then, in @secref{challenges} we talk about
 some of the challenges involved in scaling such a system to include
 more features and illustrate some of the debugging challenges. Finally,
-in @secref{positives}, we note some of the positive experiences we've
+in @secref{features}, we note some of the positive experiences we've
 had working on this system, and explore similarities to related work in
-@secref{related}.
+@secref{conclusion}.
 
 @section[#:tag "minimal"]{Mini Congame}
 
@@ -295,29 +295,14 @@ were still lurking, so we were surprised to later run into the same
 problem again. Eventually, we were able to find the root problems and
 fix them.
 
-Since we use facilities like continuations infrequently it's easy for
-us to misuse them or to doubt our own understanding of how things are
-supposed to work.
-
-@; I think this ^ is a point worth making, but maybe we should move it
-@; elsewhere.
-
-@section[#:tag "positives"]{Positives} @; Needs better title
+@section[#:tag "features"]{Features} @; Needs better title
 
 @; Enabler, opportunities, benefits, wins, gains, features, multiplier
 @; State management made easy
 @; Stepping through with swagger
 
-@; TODO: I (Marc) started writing something about how state management
-@; is made easy through continuations, which is important since tracking
-@; the state is one of the central design features from which most
-@; other features flow (composability, scopes of variables and avoiding
-@; to overwrite values). But now I am not sure that this is much of a
-@; feature or not, or rather, whether the continuations are crucial/enabling
-@; in some sense or not.
-
 Using continuations allows us to progress through the study by
-traversing the tree using regular techniques without having to worry
+traversing the study tree using regular techniques without having to worry
 much about the fact that we are doing web programming. While traversing
 the tree, we are able to keep track of data structures that follow the
 shape of the tree and, thereby, construct a ``study stack'' that allows
@@ -327,80 +312,88 @@ making it very natural for study writers to keep track of local data.
 @; Counter |-> Decrement
 @;         \-> Increment
 
-Using continuations allows us to use regular control flow
-@~cite[b:queinnec], meaning that every step of a study can decide
-locally what the participant can do next. The actions in a step can
-close over the step's environment and use regular functional programming
-techniques.
+Using continuations further allows us to use regular control flow
+@~cite[b:queinnec b:web-server], meaning that every step of a study can decide
+locally what the participant can do next. The actions in a step can close over
+the step's environment and use regular functional programming techniques.
+Consider a step that creates a quiz question along with the correct answer, asks
+the participant to answer the question, and then gives the participant a score
+based on their answer. Then the correct answer generated before displaying the
+page can be stored in a local variable @racket[answer], which is avaible in the
+scope of the action to be run after the page returns. The answer doesn't have to
+be stored in the database or passed around explicitly, and the developer does
+not have to think about the interaction with the user.
+
+@; This ^ is a bit longish, but I wanted to clarify for myself what we
+@; gain.
+@; I mean the following, not sure if we can or should include a simpler
+@; example.
+@;
+@; (defstep (quiz-step)
+@;   (define options
+@;     '(5 1 a 4 7))
+@;   (define odd-one-out 3)
+@;   (page
+@;    (haml
+@;     (form
+@;       #:action (lambda (#:answer answer)
+@;                   (cond [(= odd-one-out answer)]))
+@;       @input-number[#:answer]{Tell us the number of the item that is the odd one out.}
+@;       @submit-button)  )))
 
 Since our approach is data-driven, changing our data structures requires
-minor changes to our harness. Allowing dynamic studies was as simple
-as adding one more case to @racket[run-study] to handle callable
-study struct instances. Generally, the design is flexible to changes.
-For instance, adding support for view handlers meant extending the
-step struct with another field and adding one more request handler
-to traverse the study tree and display those handlers as necessary.
-Furthermore, the data-driven nature of the studies allows us to easily
-compose studies together just as we would any other tree-like data
-structure and use the full suite of Racket's facilities when programming
-(higher-order studies ...).
+minor changes to our harness. For instance, adding support for view
+handlers meant extending the step struct with another field and adding
+one more request handler to traverse the study tree and display those
+handlers as necessary. If instead we had chosen for a design where we
+store a representation of steps in the database, then we would have
+had to update the schema.
 
-@; Marc: compare to otree
+More generally, our design is flexible to changes. Extending studies
+to be generated dynamically was as simple as adding one more case to
+@racket[run-study] to handle callable study struct instances.
+Furthermore, the combination the data-driven nature of the studies
+and continuations that can close over arbitrary Racket objects allows us
+to easily compose studies using the full suite of Racket's facilities,
+including higher-order studies, just as we would any other tree-like data
+structure.
+
+@(define oTree-fn
+  (note "Here we highlight purposefully dimensions in which oTree is
+  lacking, even though oTree is clearly successful and superior in many
+  dimensions."))
+
+To highlight that the above benefits are in no way obvious or automatic,let us
+illustrate how they are absent from oTree @~cite[b:oTree], a popular framework
+for economic experiments.@|oTree-fn| oTree represents studies as apps that are
+put in a linear sequence, with each app requiring its own folder with various
+files. This design makes it hard to combine and reuse apps. In order to share
+data between apps is only possible by storing data to a global namespace, which
+is necessary whenever one app should only be run under some outcomes from a
+previous app. In Congame, this type of problem is solved by transitioning to
+another branch of the study and enabled by the data-driven approach. And while
+this approach would be possible in Python, it is completely natural and
+facilitated by continuations. While the ease of use of oTree makes developing
+simple studies even simpler, its limitations on composing studies and managing
+state makes developing harder studies even harder.
+
+@section[#:tag "conclusion"]{Conclusion}
+
+In conclusion, our main challenge consists in us using continuations so
+infrequently that it's easy for us to misuse them or to doubt our own
+understanding of how things are supposed to workh. The main benefit is that it
+allows us to code stateful web applications while pretending that we are
+coding a linear/sequential application. And while the benefits always remain,
+our experience with continuations will reduce their downside, just as we hope
+that our report will help others to avoid some of their pitfalls. We will continue
+using continuations and reporting back on our setbacks and progress.
+
+To be continued.
 
 
-@;[Marc: The following assumes that the state management/tracking of state was
-@;simplified/enabled by continuations.]
-@;[Marc: even resuming is still simpler (?), since it doesn't need to recreate parent
-@;studies when `continue`ing, so we only need to be able to walk the tree down.]
-@;Congame was designed to create stateful studies, so it is important that it
-@;provides some state management out of the box, while making it easy for
-@;a study creator to extend it for more complicated situations.
-@;
-@;By default, Congame therefore keeps track of the current state by storing
-@;the name of the current step within the current study, as well as the
-@;stack of parent studies. Continuations make it particularly easy to step
-@;through a study, since they store where to continue after the step is done.
-@;We can thus enter substudies and resume where we left off, without us having
-@;to store (and potentially serialize) all the context needed. [Marc: this is
-@;primarily, or entirely, the study and current location within it, since we
-@;store nothing else in memory, right?]
-@;
-@;There are two unanticipated benefits that flowed from our use of continuations
-@;to step through the study. First, since continuations do all the heavy lifting
-@;of storing the entire study and where to continue after completing the next step,
-@;we were free to make changes to the data structure of studies and steps without
-@;having to change the core of the study-runner in major ways. Our core data
-@;structure was thus easy to change and did not refrain from making changes out
-@;of fear that we would either break code or have to refactor large chunks of
-@;the core. @; Find examples of this.
-@;
-@;Second, since continuations can store arbitrary code, we were able to implement
-@;dynamic studies. @; find examples of how long this took us or how much had to change
 
 
-@; TODO: How is resuming with continuations easier than without? Couldn't
-@; we resume just as simply otherwise?
 
-@; Positives in extending the core functionality and in building studies
-@; compared to other frameworks (e.g.,@~cite[b:oTree]).
-@; Automatic state management reduces the scope for errors and enables
-@; composable and reusable studies.
-@;
-@; * Natural to write flows without needing to worry too much about storing
-@; intermediate state anywhere (except for ``resuming''). When talking
-@; about this, we'll have to reference the web server paper @~cite[b:web-server]. Developing
-@; the ``framework'' to support the flows only involves regular Racket
-@; code, so there's no need to worry about migrating a database or any
-@; other external system when making changes to how the internal state is
-@; structured.
-@;
-@; * List some/all the variables that would have to be tracked and the various
-@;   levels/layers at which they would have to be tracked.
-@;
-@; * Is there any aspect of the composition of studies that is easier because we
-@;   use continuations, or would it have been equally easy with other ways of flow
-@;   control? My guess is that it doesn't.
 
-@section[#:tag "related"]{Related Work} @; Maybe we should just have a "Conclusion" section instead?
 
 @(generate-bibliography #:sec-title "References")
