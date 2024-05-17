@@ -11,6 +11,13 @@
   #:cite-year cite-year
   #:style number-style)
 
+(define b:dbg
+  (make-bib
+   #:title "dbg"
+   #:author (authors "Bogdan Popa")
+   #:date "2021"
+   #:url "https://github.com/Bogdanp/racket-dbg"))
+
 (define b:racket
   (make-bib
    #:title "Reference: Racket"
