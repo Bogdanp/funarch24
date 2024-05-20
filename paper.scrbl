@@ -376,7 +376,7 @@ score. Of course, our design could be replicated without continuations,
 but continuations made natural and easy to implement. While the ease
 of use of oTree makes developing simple studies even simpler, its
 limitations on composing studies and managing state makes developing
-harder studies even harder.
+complex studies even harder.
 
 @; Not sure about the discussion of oTree, but some parts are helpful. It is hard to argue "it's the continuations".
 
