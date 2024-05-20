@@ -366,8 +366,8 @@ let us illustrate how they are absent from oTree @~cite[b:oTree], a
 popular framework for economic experiments.@|oTree-fn| oTree represents
 studies as apps that are run in a linear sequence, with each app
 requiring its own folder with various files. This design makes it hard
-to combine and reuse apps, in particular to share data between apps.
-For example, when app2 should only be run for participants with a high
+to combine and reuse apps, in particular to share data between apps. For
+example, when @tt{app2} should only be run for participants with a high
 score in @tt{app1}, then @tt{app1} needs to store the score in a global
 namespace, then @tt{app2} looks the score up, and decides whether to
 run or move on to @tt{app3}. In Congame, @tt{study1} can locally decide
