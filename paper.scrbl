@@ -361,20 +361,22 @@ studies, just as we would any other tree-like data structure.
   lacking, even though oTree is clearly successful and superior to
   Congame in many respects."))
 
-To highlight that the above benefits are in no way obvious or automatic, let us
-illustrate how they are absent from oTree @~cite[b:oTree], a popular framework
-for economic experiments.@|oTree-fn| oTree represents studies as apps that are
-run in a linear sequence, with each app requiring its own folder with various
-files. This design makes it hard to combine and reuse apps, in particular to
-share data between apps. For example, when app2 should only be run for
-participants with a high score in app1, then app1 needs to store the score in a
-global namespace, then app2 looks the score up, and decides whether to run or
-move on to app3. In Congame, study1 can locally decide to transition to study2
-or study3 depending on a high or low score. Of course, our design could be
-replicated without continuations, but continuations made natural and easy to
-implement. While the ease of use of oTree makes developing simple studies even
-simpler, its limitations on composing studies and managing state makes
-developing harder studies even harder.
+To highlight that the above benefits are in no way obvious or automatic,
+let us illustrate how they are absent from oTree @~cite[b:oTree], a
+popular framework for economic experiments.@|oTree-fn| oTree represents
+studies as apps that are run in a linear sequence, with each app
+requiring its own folder with various files. This design makes it hard
+to combine and reuse apps, in particular to share data between apps.
+For example, when app2 should only be run for participants with a high
+score in @tt{app1}, then @tt{app1} needs to store the score in a global
+namespace, then @tt{app2} looks the score up, and decides whether to
+run or move on to @tt{app3}. In Congame, @tt{study1} can locally decide
+to transition to @tt{study2} or @tt{study3} depending on a high or low
+score. Of course, our design could be replicated without continuations,
+but continuations made natural and easy to implement. While the ease
+of use of oTree makes developing simple studies even simpler, its
+limitations on composing studies and managing state makes developing
+harder studies even harder.
 
 @; Not sure about the discussion of oTree, but some parts are helpful. It is hard to argue "it's the continuations".
 
