@@ -126,15 +126,16 @@ with @racket[run-study].
 @; the web server (here in mini congame only the web server).
 @; This includes the removing from the has table.
 
-When a study is run, its steps are executed sequentially, and when a step uses a
-widget, the widget reifies the current continuation of the step and stores it in
-a hash table that maps URLs to continuations. The URL of that continuation is
-then linked in the resulting HTML. Once a continuation URL is visited, it
-[resumes/is restored] so that @racket[run-step] returns and the study loop can
-continue to the next step. Following this visit, the continuation is removed
-from the hash table to prevent the participant from pressing the ``Back'' button
-in their browser and redoing previous steps. @Figure-ref{example} shows a basic
-study implemented using this framework.
+When a study is run, its steps are executed sequentially, and when a
+step uses a widget, the widget reifies the current continuation of the
+step and stores it in a hash table that maps URLs to continuations. The
+URL of that continuation is then linked in the resulting HTML. Once
+a continuation URL is visited, the continuation is restored so that
+@racket[run-step] returns and the study loop can continue to the next
+step. Following this visit, the continuation is removed from the hash
+table to prevent the participant from pressing the ``Back'' button in
+their browser and redoing previous steps. @Figure-ref{example} shows a
+basic study implemented using this framework.
 
 @figure-here[
   "example"
