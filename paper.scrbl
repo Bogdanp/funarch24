@@ -357,8 +357,8 @@ studies, just as we would any other tree-like data structure.
 
 @(define oTree-fn
   (note "Here we highlight purposefully dimensions in which oTree is
-  lacking, even though oTree is clearly successful and superior to Congame in many
-  dimensions."))
+  lacking, even though oTree is clearly successful and superior to
+  Congame in many respects."))
 
 To highlight that the above benefits are in no way obvious or automatic, let us
 illustrate how they are absent from oTree @~cite[b:oTree], a popular framework
