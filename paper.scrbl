@@ -382,20 +382,15 @@ harder studies even harder.
 
 @section[#:tag "conclusion"]{Conclusion}
 
-In conclusion, our main challenge with continuations consists in us using them
-so infrequently that it's easy for us to misuse them or to doubt our own
-understanding of how things are supposed to work. The main benefit is that they
-allow us to code stateful web applications as if we were coding
-[linear/sequential] applications. We hope that our report will help others to
-avoid some of the challenges we had, while benefiting as fully as we have. In
-the meantime, we will continue using continuations and collect more experience.
+In conclusion, our main challenge with continuations consists in us
+using them so infrequently that it's easy for us to misuse them or to
+doubt our own understanding of how things are supposed to work. The main
+benefit is that they allow us to code stateful web applications using
+regular control flow techniques, leading to simple and composable code.
+We hope that our report will help others to avoid some of the challenges
+we had, while benefiting as fully as we have. In the meantime, we will
+continue using continuations and collect more experience.
 
 To be continued.
-
-
-
-
-
-
 
 @(generate-bibliography #:sec-title "References")
