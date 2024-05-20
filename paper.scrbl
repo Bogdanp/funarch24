@@ -34,12 +34,12 @@
   participants receive different messages based on earlier answers,
   choices, and performance, or trade across many rounds with other
   participants. In the design of Congame, a platform for running such
-  economic studies, we decided to use delimited continuations to
-  manage the common flow of participants through a study.
-  Here we report on the positives of this approach, as well as some
-  challenges of using continuations, such as persisting and releasing
-  values/bindings [at the right time/across requests], avoiding memory
-  leaks, and the difficulty of debugging continuations.
+  economic studies, we decided to use delimited continuations to manage
+  the common flow of participants through a study. Here we report on
+  the positives of this approach, as well as some challenges of using
+  continuations, such as persisting data across requests, working with
+  dynamic variables, avoiding memory leaks, and the difficulty of
+  debugging continuations.
 }
 
 @section[#:tag "intro"]{Introduction}
