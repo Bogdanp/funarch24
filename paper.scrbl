@@ -66,9 +66,8 @@ state management system.@|greenspun-fn|
 In @secref{minimal} we show a minimal implementation of a system
 similar to Congame and demonstrate how natural it is to program web
 applications in this style. Then, in @secref{challenges} we describe
-some challenges in scaling such a system to include
-more features and illustrate some of the debugging challenges. Finally,
-in @secref{features}, we note some positive experiences we've
+some challenges of managing the data flow and of debuggin in such a
+system. Finally, in @secref{features}, we note some positive experiences we've
 had working on this system, before concluding in @secref{conclusion}.
 
 @section[#:tag "minimal"]{Mini Congame}
@@ -102,7 +101,7 @@ The core of Congame is a @emph{study}, represented as a tree of @emph{steps} and
 other, nested, studies. Each @emph{step} in a study is a procedure that
 generates a web page used to display and possibly retrieve information to and
 from the participant being surveyed. @Figure-ref{minimal-1} implements a minimal
-(runnable) harness for constructing and running these types of studies. A study
+harness for constructing and running these types of studies. A study
 creator uses the structures defined in @figure-ref{minimal-1} alongside
 @emph{widgets} such as the one defined in @figure-ref{minimal-2} to put together
 a study. The study can then be run from within a Racket @~cite[b:racket] web
@@ -219,8 +218,8 @@ continuations in fresh threads, it is also possible to ``lose'' changes
 to a parameter when using direct assignment. Directly assigning a
 parameter in a thread records the change to the parameter in a thread
 cell, without affecting the current parameterization. While implementing
-congame, we naïvely used direct assignment to update the state of
-the study stack, which caused the parameter seemingly being reset
+congame, we used direct assignment to update the state of
+the study stack, which caused the parameter to reset
 at certain times. To work around this issue, we modified the study
 harness to explicitly pass around the current parameterization as the
 participant progresses through the study.
@@ -271,8 +270,8 @@ accidentally creating a new instance of the error reporter per request, instead
 of reusing a single one, meaning that for every new request we would spin up a
 new data collection thread with a non-tail-recursive inner loop. Finally, we
 were using composable continuations to implement a special type of return from a
-sub-study to its parent, so when a participant continued a study at the boundary
-between parent and sub-study, we would see an increase in memory usage from
+sub-study to its parent, so when a participant continued a study at
+this boundary between parent and sub-study, we would see an increase in memory usage from
 stacking the composable continuations on top of each other.
 
 @figure-here[
@@ -342,7 +341,7 @@ is available inside the scope of the action to be run after the page returns.
 
 Since our approach is data-driven, changing our data structures requires only
 minor changes to our harness. For instance, adding support for view handlers ---
-a @emph{static} URL --- meant extending the @racket[step] struct with another
+study-specific static pages --- meant extending the @racket[step] struct with another
 field and adding one more request handler to traverse the study tree and display
 those handlers as necessary. If instead we had opted for a design where we store
 a representation of steps in the database, then we would have had to update the
