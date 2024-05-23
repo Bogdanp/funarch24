@@ -382,13 +382,20 @@ studies even harder.
 
 In conclusion, our main challenge with continuations consists in us
 using them so infrequently that it's easy for us to misuse them or to
-doubt our own understanding of how things are supposed to work. The main
-benefit is that they allow us to code stateful web applications using
-regular control flow techniques, leading to simple and composable code.
-We hope that our report will help others to avoid some of the challenges
-we had, while benefiting as fully as we have. In the meantime, we will
-resume using continuations.
+doubt our own understanding of how things are supposed to work. On the
+positive side, what have continuations ever done for us? They enabled us
+to write in a direct style that avoids much of the tedium of web programming,
+made it natural to create a data-driven design for studies, allowed us to
+use the full suite and power of Racket tools, all while maintaining a design
+that is easy to change and, not least important, intellectually fun.
 
-To be continued.
+@;The main
+@;benefit is that they allow us to code stateful web applications using
+@;regular control flow techniques, leading to simple and composable code.
+@;We hope that our report will help others to avoid some of the challenges
+@;we had, while benefiting as fully as we have. In the meantime, we will
+@;resume using continuations.
+
+@; To be continued.
 
 @(generate-bibliography #:sec-title "References")
