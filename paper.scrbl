@@ -264,7 +264,7 @@ that were composing together to form a larger bug which led to massive
 memory leaks under load.
 
 First, our error reporting library was setting up exception handlers in its
-inner data collection loop, making the loop no longer tail-recursive. Seonc, our
+inner data collection loop, making the loop no longer tail-recursive. Second, our
 own middleware to configure the aforementioned error reporting library was
 accidentally creating a new instance of the error reporter per request, instead
 of reusing a single one, meaning that for every new request we would spin up a
