@@ -258,10 +258,10 @@ assignment to the parameter is lost and the program displays ``p1''.
 
 @subsection{Debugging}
 
-Debugging memory leaks in the presence of continuations is tricky. For
-a while, we had a set of small bugs in different areas of the software
-that were composing together to form a larger bug which led to massive
-memory leaks under load.
+Debugging memory leaks in the presence of continuations is tricky. We
+had a set of small bugs in different areas of the software that were
+composing together to form a larger bug which led to massive memory
+leaks under load.
 
 First, our error reporting library was setting up exception handlers in its
 inner data collection loop, making the loop no longer tail-recursive. Second, our
