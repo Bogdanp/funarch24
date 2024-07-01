@@ -102,15 +102,16 @@ on this system, before concluding in @secref{conclusion}.
           (parameterize ([current-embed embed])
             (response/xexpr (handler)))))]))]]
 
-The core of Congame is a @emph{study}, represented as a tree of @emph{steps} and
-other, nested, studies. Each @emph{step} in a study is a procedure that
-generates a web page used to display and possibly retrieve information to and
-from the participant being surveyed. @Figure-ref{minimal-1} implements a minimal
-harness for constructing and running these types of studies. A study
-creator uses the structures defined in @figure-ref{minimal-1} alongside
-@emph{widgets} such as the one defined in @figure-ref{minimal-2} to put together
-a study. The study can then be run from within a Racket @~cite[b:racket] web
-server servlet with @racket[run-study].
+The core of Congame is a @emph{study}, represented as a tree of
+@emph{steps} and other, nested, studies. Each @emph{step} in a study
+is a procedure that generates a web page used to display and possibly
+retrieve information to and from the participant being surveyed.
+@Figure-ref{minimal-1} implements a minimal harness for constructing
+and running these types of studies. A study creator uses the structures
+defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
+one defined in @figure-ref{minimal-2} to put together a study. The study
+can then be run from within a Racket @~cite[b:racket] web server servlet
+with @racket[run-study].
 
 @figure-here[
   "minimal-2"
@@ -124,22 +125,18 @@ server servlet with @racket[run-study].
                  '(continue)))])
       ,label))]]
 
-@; Marc: should we point out either above or below that the hard work of
-@; continuations is done by Racket --- either base continuations or
-@; the web server (here in mini congame only the web server).
-@; This includes the removing from the has table.
-
-When a study is run, its steps are executed sequentially, and when a step uses a
-widget, the widget reifies the current continuation of the step and stores it in
-a hash table that maps URLs to continuations. The URL of that continuation is
-then linked in the resulting HTML. Once a continuation URL is visited, the
-continuation is restored so that @racket[run-step] returns and the study loop
-can continue to the next step. Following this visit, the continuation is removed
-from the hash table to prevent the participant from pressing the ``Back'' button
+When a study is run, its steps are executed sequentially, and when a
+step uses a widget, the widget reifies the current continuation of the
+step and stores it in a hash table that maps URLs to continuations. The
+URL of that continuation is then linked in the resulting HTML. Once
+a continuation URL is visited, the continuation is restored so that
+@racket[run-step] returns and the study loop can continue to the next
+step. Following this visit, the continuation is removed from the hash
+table to prevent the participant from pressing the ``Back'' button
 in their browser and redoing previous steps. The Racket Web Server
-@~cite[b:web-server] provides @racket[send/suspend/dispatch], which takes care
-of all the continuation management. @Figure-ref{example} shows a basic study
-implemented using this framework.
+@~cite[b:web-server] provides @racket[send/suspend/dispatch], which
+takes care of all the continuation management. @Figure-ref{example}
+shows a basic study implemented using this framework.
 
 @figure-here[
   "example"
@@ -161,17 +158,16 @@ implemented using this framework.
 
 @subsection{Too Few or Too Many Parameters}
 
-In addition to the functionality presented in @secref{minimal},
-Congame tracks participants' progress through each study in a database
-to allow them to resume their progress when
-necessary (e.g., when they close the browser tab and return to the
-website, after their continuations expire, or after a server
-re-deployment). To facilitate this, Congame keeps track of an in-memory
-``study stack'' per participant that is serialized to the database
-after every step. This stack is stored using dynamic variables
-(@emph{parameters}@~cite[b:delimited-composable-control] in Racket
-parlance). In some cases, continuations interact with parameters in
-surprising ways.
+In addition to the functionality presented in @secref{minimal}, Congame
+tracks participants' progress through each study in a database to allow
+them to resume their progress when necessary (e.g., when they close the
+browser tab and return to the website, after their continuations expire,
+or after a server re-deployment). To facilitate this, Congame keeps
+track of an in-memory ``study stack'' per participant that is serialized
+to the database after every step. This stack is stored using dynamic
+variables (@emph{parameters}@~cite[b:delimited-composable-control] in
+Racket parlance). In some cases, continuations interact with parameters
+in surprising ways.
 
 @(define issue-4216
    (note (url "https://github.com/racket/racket/issues/4216")))
@@ -190,11 +186,12 @@ restored in a thread, more parameters than might be expected may end up
 being restored, because the aforementioned extended parameterization
 object is installed alongside it.
 
-@Figure-ref{challenge-1} shows an example of this issue. When run, the program
-in figure 4 displays ``a b''; but, since the continuation is captured
-up to a prompt that resides within the outer @racket[parameterize] form setting
-the parameter @racket[a], we had initially expected to see ``#f b''. Removing
-the inner use of @racket[parameterize] causes the program to display ``#f #f''.
+@Figure-ref{challenge-1} shows an example of this issue. When
+run, the program in figure 4 displays ``a b''; but, since the
+continuation is captured up to a prompt that resides within the
+outer @racket[parameterize] form setting the parameter @racket[a],
+we had initially expected to see ``#f b''. Removing the inner use of
+@racket[parameterize] causes the program to display ``#f #f''.
 
 @figure-here[
   "challenge-1"
@@ -275,16 +272,18 @@ had a set of small bugs in different areas of the software that were
 composing together to form a larger bug which led to massive memory
 leaks under load.
 
-First, our error reporting library was setting up exception handlers in its
-inner data collection loop, making the loop no longer tail-recursive. Second, our
-own middleware to configure the aforementioned error reporting library was
-accidentally creating a new instance of the error reporter per request, instead
-of reusing a single one, meaning that for every new request we would spin up a
-new data collection thread with a non-tail-recursive inner loop. Finally, we
-were using composable continuations to implement a special type of return from a
-sub-study to its parent, so when a participant continued a study at
-this boundary between parent and sub-study, we would see an increase in memory usage from
-stacking the composable continuations on top of each other.
+First, our error reporting library was setting up exception
+handlers in its inner data collection loop, making the loop no
+longer tail-recursive. Second, our own middleware to configure the
+aforementioned error reporting library was accidentally creating a new
+instance of the error reporter per request, instead of reusing a single
+one, meaning that for every new request we would spin up a new data
+collection thread with a non-tail-recursive inner loop. Finally, we were
+using composable continuations to implement a special type of return
+from a sub-study to its parent, so when a participant continued a study
+at this boundary between parent and sub-study, we would see an increase
+in memory usage from stacking the composable continuations on top of
+each other.
 
 @figure-here[
   "remote-debugger"
@@ -294,120 +293,93 @@ stacking the composable continuations on top of each other.
     @(image "debugging-2.png" #:scale 0.33)
   }]
 
-@Figure-ref{remote-debugger} shows what this type of issue looks like when
-visualized using dbg @~cite[b:dbg], a remote debugging tool for Racket. We can
-see memory use grow exponentially and that this stems from allocating a lot of ``metacontinuation-frame''
-values. This drew our attention to our use of composable continuations, which we promptly
-changed to delimited-but-not-composable continuations, since we didn't actually
-need composable continuations for our purposes. Our use of composable
-continuations amplified the other two bugs, and this change
-seemed to fix the issue by drastically reducing the effect of the memory leak.
-In a way, this fix gave us a false sense of security, since the other two
-problems were still lurking, so we were surprised to later run into the same
-problem again. Eventually, we were able to find the root problems and fix them.
+@Figure-ref{remote-debugger} shows what this type of issue looks like
+when visualized using dbg @~cite[b:dbg], a remote debugging tool for
+Racket. We can see memory use grow exponentially and that this stems
+from allocating a lot of ``metacontinuation-frame'' values. This drew
+our attention to our use of composable continuations, which we promptly
+changed to delimited-but-not-composable continuations, since we didn't
+actually need composable continuations for our purposes. Our use of
+composable continuations amplified the other two bugs, and this change
+seemed to fix the issue by drastically reducing the effect of the memory
+leak. In a way, this fix gave us a false sense of security, since the
+other two problems were still lurking, so we were surprised to later run
+into the same problem again. Eventually, we were able to find the root
+problems and fix them.
 
-@; Marc: You write ^ that it amplified the other two bugs, but there was only one other bug, the one with sentry. The second bug is the use of composable continuations, no? Or do you mean the one with parameters?
-
-@section[#:tag "features"]{Features} @; Needs better title
-
-@; Enabler, opportunities, benefits, wins, gains, features, multiplier
-@; State management made easy
-@; Stepping through with swagger
+@section[#:tag "features"]{Features}
 
 Using continuations allows us to progress through the study by
-traversing the study tree using regular techniques without having to worry
-much about the fact that we are doing web programming. While traversing
-the tree, we are able to keep track of data structures that follow the
-shape of the tree and, thereby, construct a ``study stack'' that allows
-us to store participant data in a way that imitates lexical scope,
-making it very natural for study writers to keep track of local data.
-
-@; Counter |-> Decrement
-@;         \-> Increment
+traversing the study tree using regular techniques without having to
+worry much about the fact that we are doing web programming. While
+traversing the tree, we are able to keep track of data structures that
+follow the shape of the tree and, thereby, construct a ``study stack''
+that allows us to store participant data in a way that imitates lexical
+scope, making it very natural for study writers to keep track of local
+data.
 
 Using continuations further allows us to use regular control flow
-@~cite[b:queinnec b:web-server], meaning that every step of a study can decide
-locally what the participant can do next. The actions in a step can close over
-the step's environment and use regular functional programming techniques. For
-example, we can write a step that creates a quiz and stores the correct solution
-in a local variable @racket[correct], displays the page with the quiz to the
-participant, and upon resuming checks the answer against @racket[correct], which
-is available inside the scope of the action to be run after the page returns.
+@~cite[b:queinnec b:web-server], meaning that every step of a study
+can decide locally what the participant can do next. The actions
+in a step can close over the step's environment and use regular
+functional programming techniques. For example, we can write a step
+that creates a quiz and stores the correct solution in a local variable
+@racket[correct], displays the page with the quiz to the participant,
+and upon resuming checks the answer against @racket[correct], which
+is available inside the scope of the action to be run after the page
+returns.
 
-@; This ^ is a bit longish, but I wanted to clarify for myself what we
-@; gain.
-@; I mean the following, not sure if we can or should include a simpler
-@; example.
-@;
-@; (defstep (quiz-step)
-@;   (define options
-@;     '(5 1 a 4 7))
-@;   (define odd-one-out 3)
-@;   (page
-@;    (haml
-@;     (form
-@;       #:action (lambda (#:answer answer)
-@;                   (cond [(= odd-one-out answer)]))
-@;       @input-number[#:answer]{Tell us the number of the item that is the odd one out.}
-@;       @submit-button)  )))
+Since our approach is data-driven, changing our data structures requires
+only minor changes to our harness. For instance, adding support for
+view handlers --- study-specific static pages --- meant extending the
+@racket[step] struct with another field and adding one more request
+handler to traverse the study tree and display those handlers as
+necessary. If instead we had opted for a design where we store a
+representation of steps in the database, then we would have had to
+update the schema.
 
-Since our approach is data-driven, changing our data structures requires only
-minor changes to our harness. For instance, adding support for view handlers ---
-study-specific static pages --- meant extending the @racket[step] struct with another
-field and adding one more request handler to traverse the study tree and display
-those handlers as necessary. If instead we had opted for a design where we store
-a representation of steps in the database, then we would have had to update the
-schema.
-
-More generally, our design is flexible to changes. Extending studies to be
-generated dynamically was as simple as adding one more case to
-@racket[run-study] to handle callable study struct instances. Furthermore, the
-combination of continuations that can close over arbitrary Racket objects
-alongside the data-driven nature of the studies allows us to easily create and
-compose studies using the full suite of Racket's facilities, including
-higher-order studies, just as we would any other tree-like data structure.
+More generally, our design is flexible to changes. Extending studies
+to be generated dynamically was as simple as adding one more case
+to @racket[run-study] to handle callable study struct instances.
+Furthermore, the combination of continuations that can close over
+arbitrary Racket objects alongside the data-driven nature of the studies
+allows us to easily create and compose studies using the full suite of
+Racket's facilities, including higher-order studies, just as we would
+any other tree-like data structure.
 
 @(define oTree-fn
   (note "Here we highlight purposefully dimensions in which oTree is
   lacking, even though oTree is clearly successful and superior to
   Congame in many respects."))
 
-To highlight that the above benefits are in no way obvious or automatic, let us
-illustrate how they are absent from oTree @~cite[b:oTree], a popular framework
-for economic experiments.@|oTree-fn| oTree represents studies as apps that are
-run in a linear sequence, with each app requiring its own folder with various
-files. This design makes it hard to combine and reuse apps, not least due to
-difficulties in sharing data between apps. For example, when @tt{app2} should be
-run only for participants with a high score in @tt{app1}, then @tt{app1} has to
-store the score in a global namespace, then @tt{app2} looks up this score and
-decides whether to run or hand over to @tt{app3}. In Congame, @tt{study1} can
-locally decide to transition to @tt{study2} or @tt{study3} depending on a high
-or low score. Of course, our design could be replicated without continuations,
-but continuations made this design natural and allowed us to stay flexible.
-So while the ease of use of oTree makes developing simple studies even simpler, its
-limitations on composing studies and managing state make developing complex
-studies even harder.
-
-@; Not sure about the discussion of oTree, but some parts are helpful. It is hard to argue "it's the continuations".
+To highlight that the above benefits are in no way obvious or automatic,
+let us illustrate how they are absent from oTree @~cite[b:oTree], a
+popular framework for economic experiments.@|oTree-fn| oTree represents
+studies as apps that are run in a linear sequence, with each app
+requiring its own folder with various files. This design makes it hard
+to combine and reuse apps, not least due to difficulties in sharing
+data between apps. For example, when @tt{app2} should be run only
+for participants with a high score in @tt{app1}, then @tt{app1} has
+to store the score in a global namespace, then @tt{app2} looks up
+this score and decides whether to run or hand over to @tt{app3}. In
+Congame, @tt{study1} can locally decide to transition to @tt{study2}
+or @tt{study3} depending on a high or low score. Of course, our design
+could be replicated without continuations, but continuations made this
+design natural and allowed us to stay flexible. So while the ease of use
+of oTree makes developing simple studies even simpler, its limitations
+on composing studies and managing state make developing complex studies
+even harder.
 
 @section[#:tag "conclusion"]{Conclusion}
 
 In conclusion, our main challenge with continuations consists in us
 using them so infrequently that it's easy for us to misuse them or to
 doubt our own understanding of how things are supposed to work. On the
-positive side, what have continuations ever done for us? They enabled us
-to write in a direct style that avoids much of the tedium of web programming,
-made it natural to create a data-driven design for studies, allowed us to
-use the full suite and power of Racket tools, all while maintaining a design
-that is easy to change and, not least important, intellectually fun.
-
-@;The main
-@;benefit is that they allow us to code stateful web applications using
-@;regular control flow techniques, leading to simple and composable code.
-@;We hope that our report will help others to avoid some of the challenges
-@;we had, while benefiting as fully as we have. In the meantime, we will
-@;resume using continuations.
-
-@; To be continued.
+positive side, what have continuations ever done for us? They enabled
+us to write in a direct style that avoids much of the tedium of web
+programming, made it natural to create a data-driven design for studies,
+allowed us to use the full suite and power of Racket tools, all while
+maintaining a design that is easy to change and, not least important,
+intellectually fun.
 
 @(generate-bibliography #:sec-title "References")
