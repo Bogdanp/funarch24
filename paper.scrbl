@@ -44,11 +44,12 @@
 
 @section[#:tag "intro"]{Introduction}
 
-Continuations in a web context allow applications to be programmed in a direct
-style @~cite[b:queinnec b:web-server]. In Congame, we opted to take advantage of
-this style of programming to implement a framework for specifying composable
-surveys in a declarative way that elides most of the details of day-to-day web
-programming from the study creator.
+Continuations in a web context allow applications to be programmed in a
+direct style @~cite[b:queinnec b:web-server]. In the design of Congame,
+a platform for running economics studies, we opted to take advantage
+of this style of programming to implement a framework for specifying
+composable surveys in a declarative way that elides most of the details
+of day-to-day web programming from the study creator.
 
 @(define greenspun-fn
    (note "To riff on Greenspun's Tenth Rule."))
