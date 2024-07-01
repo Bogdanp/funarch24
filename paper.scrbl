@@ -217,12 +217,18 @@ On the opposite side of the coin, because the Racket web server restores
 continuations in fresh threads, it is also possible to ``lose'' changes
 to a parameter when using direct assignment. Directly assigning a
 parameter in a thread records the change to the parameter in a thread
-cell, without affecting the current parameterization. While implementing
-Congame, we used direct assignment to update the state of
-the study stack, which caused the parameter to reset
-at certain times. To work around this issue, we modified the study
-harness to explicitly pass around the current parameterization as the
-participant progresses through the study.
+cell, without affecting the current parameterization. Originally, we
+had used direct assignment to update the state of the study stack,
+which caused the parameter to reset at the boundary between steps.
+Then, we switched to explicit uses of @racket[parameterize], which
+extends the parameterization such that the changes are available in the
+restored continuation, as in the previous example. However, this was not
+foolproof since whether or not a parameterization is extended depends on
+where the @racket[parameterize] is situated in the dynamic extent of the
+delimited continuation: if it is before the prompt, the extension is not
+visible, otherwise it is. Finally, we settled on manually passing around
+the parameterization between steps to have full control over what values
+the parameters we depend on have at any time.
 
 @figure-here[
   "challenge-2"
