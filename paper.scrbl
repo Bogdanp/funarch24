@@ -57,19 +57,23 @@ of day-to-day web programming from the study creator.
 In particular, Congame automatically tracks and manages much of the
 state of study participants, which is a big boon, since Congame studies
 are inherently stateful applications. A participant's next step may
-depend on random treatments --- as in A/B tests --- or their own or other
-participants' actions: they may only be allowed to move on if they pass
-a comprehension test, and their payoff may be co-determined by other
-participants with whom they interact in market games. Congame thus frees
-the study creator from having to implement their own ad hoc bug-ridden
-state management system.@|greenspun-fn|
+depend on random treatments --- as in A/B tests --- or their own or
+other participants' actions: they may only be allowed to move on if
+they pass a comprehension test, and their payoff may be co-determined
+by other participants with whom they interact in market games. Congame
+thus frees the study creator from having to implement their own ad hoc
+bug-ridden state management system.@|greenspun-fn|
 
-In @secref{minimal} we show a minimal implementation of a system
-similar to Congame and demonstrate how natural it is to program web
-applications in this style. Then, in @secref{challenges} we describe
-some challenges of managing the data flow and of debuggin in such a
-system. Finally, in @secref{features}, we note some positive experiences we've
-had working on this system, before concluding in @secref{conclusion}.
+We report on our experience using delimited continuations to implement
+Congame, analyzing the pros and cons of our approach, and conclude that,
+despite some shortcomings, this is a viable approach that leads to a
+simpler overall architecture than other approaches. In @secref{minimal}
+we show a minimal implementation of a system similar to Congame and
+demonstrate how natural it is to program web applications in this
+style. Then, in @secref{challenges} we describe some challenges of
+managing the data flow and of debuggin in such a system. Finally, in
+@secref{features}, we note some positive experiences we've had working
+on this system, before concluding in @secref{conclusion}.
 
 @section[#:tag "minimal"]{Mini Congame}
 
