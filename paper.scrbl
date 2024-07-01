@@ -218,7 +218,7 @@ continuations in fresh threads, it is also possible to ``lose'' changes
 to a parameter when using direct assignment. Directly assigning a
 parameter in a thread records the change to the parameter in a thread
 cell, without affecting the current parameterization. While implementing
-congame, we used direct assignment to update the state of
+Congame, we used direct assignment to update the state of
 the study stack, which caused the parameter to reset
 at certain times. To work around this issue, we modified the study
 harness to explicitly pass around the current parameterization as the
