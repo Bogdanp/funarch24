@@ -223,12 +223,13 @@ which caused the parameter to reset at the boundary between steps.
 Then, we switched to explicit uses of @racket[parameterize], which
 extends the parameterization such that the changes are available in the
 restored continuation, as in the previous example. However, this was not
-foolproof since whether or not a parameterization is extended depends on
-where the @racket[parameterize] is situated in the dynamic extent of the
-delimited continuation: if it is before the prompt, the extension is not
-visible, otherwise it is. Finally, we settled on manually passing around
-the parameterization between steps to have full control over what values
-the parameters we depend on have at any time.
+foolproof since whether or not a parameterization is extended depends
+on where the @racket[parameterize] is situated in the dynamic extent of
+the delimited continuation: if it is before the prompt, the extension is
+not visible, otherwise it is. Finally, we settled on manually passing
+around the parameterization between steps to have full control over what
+values the parameters we depend on have at any time. We have not yet
+experimented with using continuation marks directly.
 
 @figure-here[
   "challenge-2"
