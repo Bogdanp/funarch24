@@ -392,25 +392,25 @@ studies even harder.
 
 @section[#:tag "conclusion"]{Conclusion}
 
-In conclusion, our main challenge with continuations consists in us
-using them so infrequently that it's easy for us to misuse them or to
-doubt our own understanding of how things are supposed to work. On the
-positive side, what have continuations ever done for us? They enabled us
-to write in a direct style that avoids much of the tedium of web programming,
-made it natural to create a data-driven design for studies, allowed us to
-use the full suite and power of Racket tools, all while maintaining a design
-that is easy to change and, not least important, intellectually fun.
+Continuations allow us to write web code in a direct style, simplifying
+the job of embedding domain specific languages in a web context.
+Without leveraging continuations, the study harness introduced in
+@secref{minimal} would have been a lot more cumbersome to implement
+than a straightforward depth-first traversal of a tree. The issues
+we encountered were due to unexpected interactions between dynamic
+variables and delimited continuations. We recommend that functional
+architects avoid combining dynamic variables and continuations in their
+systems where possible, or do so with care, while taking into account
+the issues presented in @secref{challenges}. Despite the problems we
+encountered, we believe continuations are better than regular web
+programming with manual routing (the approach that oTree takes) or than
+a weaker form of ``web continuations'' where closures get mapped to
+URLs, since neither of those approaches would permit us to implement the
+core study harness in such a direct and simple way. Thus, we recommend
+using continuations to implement systems that need to be serialized over
+a sequence of web interactions.
 
 @acks{We would like to thank Matthew Flatt and the anonymous reviewers
 for their comments and suggestions.}
-
-@;The main
-@;benefit is that they allow us to code stateful web applications using
-@;regular control flow techniques, leading to simple and composable code.
-@;We hope that our report will help others to avoid some of the challenges
-@;we had, while benefiting as fully as we have. In the meantime, we will
-@;resume using continuations.
-
-@; To be continued.
 
 @(generate-bibliography #:sec-title "References")
