@@ -401,6 +401,9 @@ made it natural to create a data-driven design for studies, allowed us to
 use the full suite and power of Racket tools, all while maintaining a design
 that is easy to change and, not least important, intellectually fun.
 
+@acks{We would like to thank Matthew Flatt and the anonymous reviewers
+for their comments and suggestions.}
+
 @;The main
 @;benefit is that they allow us to code stateful web applications using
 @;regular control flow techniques, leading to simple and composable code.
