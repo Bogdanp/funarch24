@@ -66,12 +66,12 @@ bug-ridden state management system.@|greenspun-fn|
 
 We report on our experience using delimited continuations to implement
 Congame, and analyzing the pros and cons, we conclude that the minor
-shortcomings of this approach are outweighed by its benefits of
-enabling a simpler overall architecture. In @secref{minimal} we show a
-minimal implementation of a system similar to Congame and demonstrate
-how natural it is to program web applications in this style. Then, in
+shortcomings of this approach are outweighed by its benefits of enabling
+a simpler overall architecture. In @secref{minimal} we show a minimal
+implementation of a system similar to Congame and demonstrate how
+natural it is to program web applications in this style. Then, in
 @secref{challenges} we describe some challenges of managing the data
-flow and of debuggin in such a system. Finally, in @secref{features},
+flow and of debugging in such a system. Finally, in @secref{features},
 we note some positive experiences we've had working on this system,
 before concluding in @secref{conclusion}.
 
