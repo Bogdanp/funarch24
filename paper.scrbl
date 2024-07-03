@@ -396,19 +396,21 @@ Continuations allow us to write web code in a direct style, simplifying
 the job of embedding domain specific languages in a web context.
 Without leveraging continuations, the study harness introduced in
 @secref{minimal} would have been a lot more cumbersome to implement
-than a straightforward depth-first traversal of a tree. The issues
-we encountered were due to unexpected interactions between dynamic
+than a straightforward depth-first traversal of a tree. The issues we
+encountered were mainly due to unexpected interactions between dynamic
 variables and delimited continuations. We recommend that functional
 architects avoid combining dynamic variables and continuations in their
 systems where possible, or do so with care, while taking into account
-the issues presented in @secref{challenges}. Despite the problems we
-encountered, we believe continuations are better than regular web
-programming with manual routing (the approach that oTree takes) or than
-a weaker form of ``web continuations'' where closures get mapped to
-URLs, since neither of those approaches would permit us to implement the
-core study harness in such a direct and simple way. Thus, we recommend
-using continuations to implement systems that need to be serialized over
-a sequence of web interactions.
+the issues presented in @secref{challenges}. We also recommend that
+functional architects carefully consider whether they need composable
+and delimited continuations, or whether delimited alone will suffice.
+Despite the problems we encountered, we believe continuations are better
+than regular web programming with manual routing (the approach that
+oTree takes) or than a weaker form of ``continuations'' where closures
+get mapped to URLs, since neither of those approaches would permit us to
+implement the core study harness in such a direct and simple way. Thus,
+we recommend using continuations to implement systems that need to be
+serialized over a sequence of web interactions.
 
 @acks{We would like to thank Matthew Flatt and the anonymous reviewers
 for their comments and suggestions.}
