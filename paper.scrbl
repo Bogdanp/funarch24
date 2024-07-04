@@ -102,15 +102,16 @@ before concluding in @secref{conclusion}.
           (parameterize ([current-embed embed])
             (response/xexpr (handler)))))]))]]
 
-The core of Congame is a @emph{study}, represented as a tree of @emph{steps} and
-other, nested, studies. Each @emph{step} in a study is a procedure that
-generates a web page used to display and possibly retrieve information to and
-from the participant being surveyed. @Figure-ref{minimal-1} implements a minimal
-harness for constructing and running these types of studies. A study
-creator uses the structures defined in @figure-ref{minimal-1} alongside
-@emph{widgets} such as the one defined in @figure-ref{minimal-2} to put together
-a study. The study can then be run from within a Racket @~cite[b:racket] web
-server servlet with @racket[run-study].
+The core of Congame is a @emph{study}, represented as a tree of
+@emph{steps} and sub-studies. Each @emph{step} in a study is a
+procedure that generates a web page used to display and possibly
+retrieve information to and from the participant being surveyed.
+@Figure-ref{minimal-1} implements a minimal harness for constructing
+and running these types of studies. A study creator uses the structures
+defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
+one defined in @figure-ref{minimal-2} to put together a study. The study
+can then be run from within a Racket @~cite[b:racket] web server servlet
+with @racket[run-study].
 
 @figure-here[
   "minimal-2"
