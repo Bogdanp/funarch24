@@ -102,3 +102,17 @@
    #:url  "https://www.sciencedirect.com/science/article/pii/S2214635016000101"
    #:doi "10.1016/j.jbef.2015.12.001"
    #:date "2016"))
+
+(define b:marks
+  (make-bib
+   #:title "Modeling an Algebraic Stepper"
+   #:author (authors
+             "John Clements"
+             "Matthew Flatt"
+             "Matthias Felleisen")
+   #:location (journal-location
+               "Lecture Notes in Computer Science"
+               #:volume 2028
+               #:pages '(320 334))
+   #:doi "10.1007/3-540-45309-1_21"
+   #:date "2001"))

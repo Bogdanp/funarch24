@@ -234,7 +234,7 @@ the delimited continuation: if it is before the prompt, the extension is
 not visible, otherwise it is. Finally, we settled on manually passing
 around the parameterization between steps to have full control over what
 values the parameters we depend on have at any time. We have not yet
-experimented with using continuation marks directly.
+experimented with using continuation marks @~cite[b:marks] directly.
 
 @figure-here[
   "challenge-2"
