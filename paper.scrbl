@@ -66,12 +66,12 @@ bug-ridden state management system.@|greenspun-fn|
 
 We report on our experience using delimited continuations to implement
 Congame, and analyzing the pros and cons, we conclude that the minor
-shortcomings of this approach are outweighed by its benefits of
-enabling a simpler overall architecture. In @secref{minimal} we show a
-minimal implementation of a system similar to Congame and demonstrate
-how natural it is to program web applications in this style. Then, in
+shortcomings of this approach are outweighed by its benefits of enabling
+a simpler overall architecture. In @secref{minimal} we show a minimal
+implementation of a system similar to Congame and demonstrate how
+natural it is to program web applications in this style. Then, in
 @secref{challenges} we describe some challenges of managing the data
-flow and of debuggin in such a system. Finally, in @secref{features},
+flow and of debugging in such a system. Finally, in @secref{features},
 we note some positive experiences we've had working on this system,
 before concluding in @secref{conclusion}.
 
@@ -102,15 +102,16 @@ before concluding in @secref{conclusion}.
           (parameterize ([current-embed embed])
             (response/xexpr (handler)))))]))]]
 
-The core of Congame is a @emph{study}, represented as a tree of @emph{steps} and
-other, nested, studies. Each @emph{step} in a study is a procedure that
-generates a web page used to display and possibly retrieve information to and
-from the participant being surveyed. @Figure-ref{minimal-1} implements a minimal
-harness for constructing and running these types of studies. A study
-creator uses the structures defined in @figure-ref{minimal-1} alongside
-@emph{widgets} such as the one defined in @figure-ref{minimal-2} to put together
-a study. The study can then be run from within a Racket @~cite[b:racket] web
-server servlet with @racket[run-study].
+The core of Congame is a @emph{study}, represented as a tree of
+@emph{steps} and sub-studies. Each @emph{step} in a study is a
+procedure that generates a web page used to display and possibly
+retrieve information to and from the participant being surveyed.
+@Figure-ref{minimal-1} implements a minimal harness for constructing
+and running these types of studies. A study creator uses the structures
+defined in @figure-ref{minimal-1} alongside @emph{widgets} such as the
+one defined in @figure-ref{minimal-2} to put together a study. The study
+can then be run from within a Racket @~cite[b:racket] web server servlet
+with @racket[run-study].
 
 @figure-here[
   "minimal-2"
@@ -392,22 +393,27 @@ studies even harder.
 
 @section[#:tag "conclusion"]{Conclusion}
 
-In conclusion, our main challenge with continuations consists in us
-using them so infrequently that it's easy for us to misuse them or to
-doubt our own understanding of how things are supposed to work. On the
-positive side, what have continuations ever done for us? They enabled us
-to write in a direct style that avoids much of the tedium of web programming,
-made it natural to create a data-driven design for studies, allowed us to
-use the full suite and power of Racket tools, all while maintaining a design
-that is easy to change and, not least important, intellectually fun.
+Continuations allow us to write web code in a direct style, simplifying
+the job of embedding domain specific languages in a web context.
+Without leveraging continuations, the study harness introduced in
+@secref{minimal} would have been a lot more cumbersome to implement
+than a straightforward depth-first traversal of a tree. The issues we
+encountered were mainly due to unexpected interactions between dynamic
+variables and delimited continuations. We recommend that functional
+architects avoid combining dynamic variables and continuations in their
+systems where possible, or do so with care, while taking into account
+the issues presented in @secref{challenges}. We also recommend that
+functional architects carefully consider whether they need composable
+and delimited continuations, or whether delimited alone will suffice.
+Despite the problems we encountered, we believe continuations are better
+than regular web programming with manual routing (the approach that
+oTree takes) or than a weaker form of ``continuations'' where closures
+get mapped to URLs, since neither of those approaches would permit us to
+implement the core study harness in such a direct and simple way. Thus,
+we recommend using continuations to implement systems that need to be
+serialized over a sequence of web interactions.
 
-@;The main
-@;benefit is that they allow us to code stateful web applications using
-@;regular control flow techniques, leading to simple and composable code.
-@;We hope that our report will help others to avoid some of the challenges
-@;we had, while benefiting as fully as we have. In the meantime, we will
-@;resume using continuations.
-
-@; To be continued.
+@acks{We would like to thank Matthew Flatt and the anonymous reviewers
+for their comments and suggestions.}
 
 @(generate-bibliography #:sec-title "References")
