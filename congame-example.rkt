@@ -1,75 +1,43 @@
-#lang racket/base
-
-(require congame/components/study
-         congame/components/formular
-         congame/components/transition-graph
-         koyo/haml)
+#lang conscript/local
 
 (provide
  funarch24)
 
-(define submit-button
-  (haml
-   (:button.button.next-button ([:type "submit"]) "Submit")))
+(defvar* score the-score)
 
-(define (score)
-  (page
-   (haml
-    (.container
-     (:h1 "Score")
+(defstep (get-score)
+  (define (update-score #:score s)
+    (set! score s))
+  (html
+   (h1 "Score")
+   (form
+    #:action update-score
+    (input-number #:score #:min 0 #:max 10 "Your score (from 0 to 10)")
+    submit-button)))
 
-     (formular
-      (haml
-       (:div
-        (:div
-         (#:score
-          (input-number #:min 0 #:max 10 "Your score (from 0 to 10)")))
-        submit-button)))))))
+(defstudy score-study
+  [get-score --> ,(lambda () done)])
 
-(define score-study
-  (make-study
-   "score"
-   #:provides '(score)
-   (list
-    (make-step 'score score))))
+(defstep (high-scorers)
+  (html
+   (h1 "You are a high scorer!")
+   (p "Your score was " (number->string score))
+   (button "Next")))
 
-(define (high-scorers)
-  (page
-   (haml
-    (.container
-     (:h1 "You are a high scorer!")
+(defstudy high-scorers-study
+  [high-scorers --> ,(lambda () done)])
 
-     (button void "Next")))))
+(defstep (final)
+  (html
+   (h1 "Thank you for participating")))
 
-(define high-scorers-study
-  (make-study
-   "high-scorers-only"
-   (list (make-step 'high-scorers-only high-scorers))))
+(defstudy final-study
+  [final --> final])
 
-(define (final)
-  (page
-   (haml
-    (.container
-     (:h1 "Thank you for participating")))))
-
-(define final-study
-  (make-study
-   "final"
-   (list (make-step 'final final))))
-
-(define funarch24
-  (make-study
-   "funarch24-study"
-   #:transitions
-   (transition-graph
-    [score --> ,(lambda ()
-                        (if (> (get 'score) 4)
-                            'high-scorers-only
-                            'final))]
-    [high-scorers-only --> final]
-    [final --> final])
-
-   (list
-    (make-step/study 'score score-study #:provide-bindings `([score score]))
-    (make-step/study 'high-scorers-only high-scorers-study #:require-bindings `((score score)))
-    (make-step/study 'final final-study))))
+(defstudy funarch24
+  [score-study --> ,(lambda ()
+                      (if (> score 4)
+                          'high-scorers-study
+                          'final-study))]
+  [high-scorers-study --> final-study]
+  [final-study --> final-study])
