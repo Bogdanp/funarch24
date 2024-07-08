@@ -472,8 +472,8 @@ games, as well as any other system that requires some computation to
 be suspended until the user takes action (e.g. shopping carts, or
 simulations where the computation is delegated to another black box,
 etc.). For our use case, where backtracking via the browser's ``Back''
-button is undesirable, multi-shot continuations are not required but, in
-other applications, they may be desirable. In that sense, in a language
+button is undesirable, multi-shot continuations are not required but,
+in other applications, they may be useful. In that sense, in a language
 without continuations, coroutines would likely provide us with the same
 benefits, but would not be suitable for use cases where multi-shot
 continuations are required. Other approaches, such as regular web
