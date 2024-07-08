@@ -161,37 +161,65 @@ implemented using this framework.
 @section[#:tag "benefits"]{Benefits of Continuations}
 
 Using continuations allows us to progress through the study by
-traversing the study tree using regular techniques without having to worry
-much about the fact that we are doing web programming. While traversing
-the tree, we are able to keep track of data structures that follow the
-shape of the tree and, thereby, construct a ``study stack'' that allows
-us to store participant data in a way that imitates lexical scope,
-making it very natural for study writers to keep track of local data.
+traversing the study tree using regular techniques without having to
+worry much about the fact that we are doing web programming. While
+performing the traversal, we keep track of the participant's position
+in the tree which allows us to store participant data in a way that
+imitates lexical scope, making it very natural for study writers to keep
+track of local data.
 
 Using continuations further allows us to use regular control flow
-@~cite[b:queinnec b:web-server], meaning that every step of a study can decide
-locally what the participant can do next. The actions in a step can close over
-the step's environment and use regular functional programming techniques. For
-example, we can write a step that creates a quiz and stores the correct solution
-in a local variable @racket[correct], displays the page with the quiz to the
-participant, and upon resuming checks the answer against @racket[correct], which
-is available inside the scope of the action to be run after the page returns.
+@~cite[b:queinnec b:web-server], meaning that every step of a study
+can decide locally what the participant can do next. The actions in a
+step can close over the step's environment and use regular functional
+programming techniques. @Figure-ref{var-example} illustrates that we
+can write a step that tosses a coin and stores the outcome in the local
+variable @racket[toss], then offers a choice to the participant and,
+after the participant makes their choice, it checks the answer against
+@racket[toss].
 
-Since our approach is data-driven, changing our data structures requires only
-minor changes to our harness. For instance, adding support for view handlers ---
-study-specific static pages --- meant extending the @racket[step] struct with another
-field and adding one more request handler to traverse the study tree and display
-those handlers as necessary. If instead we had opted for a design where we store
-a representation of steps in the database, then we would have had to update the
-schema.
+@figure-here[
+  "var-example"
+  @elem{A study showing lexical scope and data flow in Congame.}
+  @racketblock0[
+  (defvar* ok?)
+  (defstep (intro)
+    (html
+     (h1 "Welcome to the study!")
+     (button void "Start")))
+  (defstep (heads-or-tails)
+    (define toss (random-ref '(h t)))
+    (html
+     (button (λ () (set! ok? (eq? toss 'h))) "Heads")
+     " or "
+     (button (λ () (set! ok? (eq? toss 't))) "Tails")))
+  (defstep (result)
+    (html
+     (if ok?
+         (p "You guessed right.")
+         (p "You guessed wrong."))))
+  (defstudy choices
+    [heads-or-tails --> ,(λ () done)])
+  (defstudy example
+    [intro --> choices --> result --> ,(λ () done)])]]
 
-More generally, our design is flexible to changes. Extending studies to be
-generated dynamically was as simple as adding one more case to
-@racket[run-study] to handle callable study struct instances. Furthermore, the
-combination of continuations that can close over arbitrary Racket objects
-alongside the data-driven nature of the studies allows us to easily create and
-compose studies using the full suite of Racket's facilities, including
-higher-order studies, just as we would any other tree-like data structure.
+Since our approach is data-driven, changing our data structures requires
+only minor changes to our harness. For instance, adding support for
+view handlers --- study-specific static pages --- meant extending the
+@racket[step] struct with another field and adding one more request
+handler to traverse the study tree and display those handlers as
+necessary. If instead we had opted for a design where we store a
+representation of steps in the database, then we would have had to
+update the schema.
+
+More generally, our design is flexible to changes. Extending studies
+to be generated dynamically was as simple as adding one more case
+to @racket[run-study] to handle callable study struct instances.
+Furthermore, the combination of continuations that can close over
+arbitrary Racket objects alongside the data-driven nature of the studies
+allows us to easily create and compose studies using the full suite of
+Racket's facilities, including higher-order studies, just as we would
+any other tree-like data structure.
 
 @(define oTree-fn
   (note "Here we highlight purposefully dimensions in which oTree is
@@ -199,20 +227,66 @@ higher-order studies, just as we would any other tree-like data structure.
   Congame in many respects."))
 
 To highlight that the above benefits are in no way obvious or automatic,
-let us illustrate how they are absent from oTree @~cite[b:oTree], a
-popular framework for economic experiments.@|oTree-fn| oTree represents
-studies as apps that are run in a linear sequence, with each app
-requiring its own folder with various files. This design makes it hard
-to combine and reuse apps, not least due to difficulties in sharing
-data between apps. For example, when @tt{app2} should be run only
-for participants with a high score in @tt{app1}, then @tt{app1} has
-to store the score in a global namespace, then @tt{app2} looks up
-this score and decides whether to run or hand over to @tt{app3}. In
-Congame, @tt{study1} can locally decide to transition to @tt{study2} or
-@tt{study3} depending on a high or low score. So, while the ease of use
-of oTree makes developing simple studies even simpler, its limitations
-on composing studies and managing state make developing complex studies
-even harder.
+let us illustrate how they are absent from oTree @~cite[b:oTree],
+a popular framework for economic experiments.@|oTree-fn| oTree
+represents studies as apps that are run in a linear sequence, with
+each app requiring its own folder with various files. This design
+makes it hard to combine and reuse apps, not least due to difficulties
+in sharing data between apps. For example, when @tt{app2} should
+be run only for participants with a high score in @tt{app1}, then
+@tt{app1} has to store the score in a global namespace, then @tt{app2}
+looks up this score and decides whether to run or hand over to
+@tt{app3}. In Congame, @tt{study1} can locally decide to transition
+to @tt{study2} or @tt{study3} depending on a high or low score.
+In @figure-ref{otree-example} we replicate the Congame example in
+@figure-ref{var-example} using oTree, illustrating the problem of
+sharing data between apps@note{Of course, such a simple study would not
+normally be split across multiple apps.}. So, while the ease of use of
+oTree makes developing simple studies easy, its limitations on composing
+studies and managing state make developing complex studies hard.
+
+@figure-here[
+  #:style left-figure-style
+  "otree-example"
+  @elem{A heavily edited-for-space example of the coin toss study implemented in oTree.}
+  @verbatim|{
+# In settings.py:
+SESSION_CONFIGS = [{"app_sequence": [
+  'Intro', 'Choices', 'Result'
+]}]
+PARTICIPANT_FIELDS = ['ok']
+
+# In Intro/IntroPage.html:
+# ...
+{{ block content }}
+  <h1>Welcome to the study!</h1>
+  {{ next_button }}
+{{ endblock }}
+
+# In Choices/__init__.py:
+# ...
+class Player(BasePlayer):
+    choice = models.StringField(label='Choice:')
+
+class ChoicePage(Page):
+    form_model = 'player'
+    form_fields = ['choice']
+
+    @staticmethod
+    def before_next_page(player, timedout):
+        player.participant.ok = player.choice == random.choice(['heads', 'tails'])
+# ...
+
+# In Result/ResultPage.html:
+# ...
+{{ block content }}
+  {% if player.participant.ok %}
+    <p>You chose right.</p>
+  {% else %}
+    <p>You chose wrong.</p>
+  {% endif %}
+{{ endblock }}
+}|]
 
 Of course, our design could be replicated without continuations, but
 continuations made this design natural and allowed us to stay flexible.
