@@ -452,11 +452,13 @@ than a straightforward depth-first traversal of a tree. The issues
 we encountered were primarily due to unexpected interactions
 between dynamic variables and delimited continuations. We recommend
 that functional architects avoid combining dynamic variables and
-continuations in their systems where possible, or do so with care, while
-taking into account the issues presented in @secref{challenges}. We also
-recommend that they carefully consider whether they need composable
-@emph{and} delimited continuations, or whether delimited alone will
-suffice.
+continuations in their systems where possible, or do so with care,
+while taking into account the issues presented in @secref{challenges}.
+If we were to rewrite Congame today, we would explicitly pass around
+a context object containing the data we need between steps instead of
+using dynamic variables. We also recommend that functional architects
+carefully consider whether they need composable @emph{and} delimited
+continuations, or whether delimited alone will suffice.
 
 To aid debugging, languages should provide tooling to allow
 continuations to be inspected at runtime. That way, when encountering
@@ -475,7 +477,7 @@ etc.). For our use case, where backtracking via the browser's ``Back''
 button is undesirable, multi-shot continuations are not required but,
 in other applications, they may be useful. In that sense, in a language
 without continuations, coroutines would likely provide us with the same
-benefits, but would not be suitable for use cases where multi-shot
+benefits, but would not be as good a fit for use cases where multi-shot
 continuations are required. Other approaches, such as regular web
 programming with manual routing or a weaker form of ``continuations''
 where URLs get mapped to closures, would not permit us to implement the
