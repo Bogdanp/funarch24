@@ -75,10 +75,10 @@ system similar to Congame and demonstrate how natural it is to program
 web applications in this style. Then, in @secref{benefits} we note some
 positive benefits that follow from our design and compare our system
 to a popular platform for creating studies. In @secref{challenges} we
-describe some challenges of managing the data flow and of debugging in
-such a system. Finally, analyzing the pros and cons, we conclude in
-@secref{reflections} that the minor shortcomings of our approach are
-outweighed by its benefits of enabling a simpler overall architecture.
+describe some challenges of managing the data flow and of debugging
+in such a system. Finally, in @secref{reflections} we reflect on our
+approach, analyze its pros and cons, and make recommendations targeted
+at other functional architects looking to implement similar systems.
 
 @section[#:tag "minimal"]{Mini Congame}
 
