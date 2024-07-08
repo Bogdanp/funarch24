@@ -295,8 +295,8 @@ continuations made this design natural and allowed us to stay flexible.
 
 @subsection{Too Few or Too Many Parameters}
 
-To allow participants to resume when necessary (e.g., when they
-close the browser tab and return to the website, after their
+To allow participants to resume a study when necessary (e.g., when
+they close the browser tab and return to the website, after their
 continuations expire, or after a server re-deployment), Congame
 persists the participant's position: the fully-qualified path to the
 node they reached within the study tree as represented as a list of
