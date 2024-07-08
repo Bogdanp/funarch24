@@ -76,9 +76,10 @@ web applications in this style. Then, in @secref{benefits} we note some
 positive benefits that follow from our design and compare our system
 to a popular platform for creating studies. In @secref{challenges} we
 describe some challenges of managing the data flow and of debugging
-in such a system. Finally, in @secref{reflections} we reflect on our
-approach, analyze its pros and cons, and make recommendations targeted
-at other functional architects looking to implement similar systems.
+in such a system. Finally, in @secref{reflections} we reflect on and
+broadly recommend our approach, analyze its pros and cons, and make
+suggestions targeted at other functional architects looking to implement
+similar systems.
 
 @section[#:tag "minimal"]{Mini Congame}
 
@@ -175,7 +176,7 @@ step can close over the step's environment and use regular functional
 programming techniques. @Figure-ref{var-example} illustrates that we
 can write a step that tosses a coin and stores the outcome in the local
 variable @racket[toss], then offers a choice to the participant and,
-after the participant makes their choice, it checks the answer against
+after the participant makes their choice, checks the answer against
 @racket[toss].
 
 @figure-here[
@@ -238,10 +239,10 @@ be run only for participants with a high score in @tt{app1}, then
 looks up this score and decides whether to run or hand over to
 @tt{app3}. In Congame, @tt{study1} can locally decide to transition
 to @tt{study2} or @tt{study3} depending on a high or low score.
-In @figure-ref{otree-example} we replicate the Congame example in
+In @figure-ref{otree-example} we replicate the Congame example from
 @figure-ref{var-example} using oTree, illustrating the problem of
-sharing data between apps@note{Of course, such a simple study would not
-normally be split across multiple apps.}. So, while the ease of use of
+sharing data between apps.@note{Of course, such a simple study would not
+normally be split across multiple apps.} So, while the ease of use of
 oTree makes developing simple studies easy, its limitations on composing
 studies and managing state make developing complex studies hard.
 
