@@ -472,16 +472,19 @@ We believe continuations are the right abstraction for implementing
 interactive systems as targeted by Congame, such as surveys and market
 games, as well as any other system that requires some computation to
 be suspended until the user takes action (e.g. shopping carts, or
-simulations where the computation is delegated to another black box,
-etc.). For our use case, where backtracking via the browser's ``Back''
-button is undesirable, multi-shot continuations are not required but,
-in other applications, they may be useful. In that sense, in a language
-without continuations, coroutines would likely provide us with the same
-benefits, but would not be as good a fit for use cases where multi-shot
-continuations are required. Other approaches, such as regular web
-programming with manual routing or a weaker form of ``continuations''
-where URLs get mapped to closures, would not permit us to implement the
-core study harness in such a direct and simple way.
+simulations where part of the computation is delegated to another black
+box, etc.). For our use case, where backtracking via the browser's
+``Back'' button is undesirable, multi-shot continuations are not
+required but, in other applications, they may be useful. In that sense,
+in a language without continuations, coroutines would likely provide
+us with the same benefits, but would not be as good a fit for use
+cases where the possiblity of branching the user's progress through an
+interaction is a desirable feature (e.g. having the ability to open
+a separate tab to take a different path through a study tree). Other
+approaches, such as regular web programming with manual routing or a
+weaker form of ``continuations'' where URLs get mapped to closures,
+would not permit us to implement the core study harness in such a direct
+and simple way.
 
 @acks{We would like to thank the anonymous reviewers for their comments
 and suggestions.}
