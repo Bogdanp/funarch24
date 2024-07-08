@@ -479,7 +479,7 @@ box, etc.). For our use case, where backtracking via the browser's
 required but, in other applications, they may be useful. In that sense,
 in a language without continuations, coroutines would likely provide
 us with the same benefits, but would not be as good a fit for use
-cases where the possiblity of branching the user's progress through an
+cases where the possibility of branching the user's progress through an
 interaction is a desirable feature (e.g. having the ability to open
 a separate tab to take a different path through a study tree). Other
 approaches, such as regular web programming with manual routing or a
