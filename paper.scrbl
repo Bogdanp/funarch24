@@ -400,7 +400,7 @@ experimented with using continuation marks @~cite[b:marks] directly.
 continuation from the first thread is restored in the second, the direct
 assignment to the parameter is lost and the program displays ``p1''.
 
-@subsection{Debugging}
+@subsection[#:tag "debugging"]{Debugging}
 
 Debugging memory leaks in the presence of continuations is tricky. We
 had a set of small bugs in different areas of the system that were
@@ -456,13 +456,30 @@ continuations in their systems where possible, or do so with care, while
 taking into account the issues presented in @secref{challenges}. We also
 recommend that they carefully consider whether they need composable
 @emph{and} delimited continuations, or whether delimited alone will
-suffice. Despite the problems we encountered, we believe continuations
-are better for systems that need to be serialized over a sequence of
-web interactions than regular web programming with manual routing (the
-approach that oTree takes) or than a weaker form of ``continuations''
-where closures get mapped to URLs, since neither of those approaches
-would permit us to implement the core study harness in such a direct and
-simple way.
+suffice.
+
+To aid debugging, languages should provide tooling to allow
+continuations to be inspected at runtime. That way, when encountering
+issues such as the one presented in @secref{debugging}, programmers
+would have an easier time finding the source of memory leaks. For
+example, in the case of Racket's ``metacontinuation-frame'' values, it
+would be helpful if those values were inspectable to determine their
+source location and what other objects they hold references to.
+
+We believe continuations are the right abstraction for implementing
+interactive systems as targeted by Congame, such as surveys and market
+games, as well as any other system that requires some computation to
+be suspended until the user takes action (e.g. shopping carts, or
+simulations where the computation is delegated to another black box,
+etc.). For our use case, where backtracking via the browser's ``Back''
+button is undesirable, multi-shot continuations are not required but, in
+other applications, they may be desirable. In that sense, in a language
+without continuations, coroutines would likely provide us with the same
+benefits, but would not be suitable for use cases where multi-shot
+continuations are required. Other approaches, such as regular web
+programming with manual routing or a weaker form of ``continuations''
+where URLs get mapped to closures, would not permit us to implement the
+core study harness in such a direct and simple way.
 
 @acks{We would like to thank the anonymous reviewers for their comments
 and suggestions.}
