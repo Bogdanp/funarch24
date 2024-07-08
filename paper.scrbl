@@ -295,16 +295,15 @@ continuations made this design natural and allowed us to stay flexible.
 
 @subsection{Too Few or Too Many Parameters}
 
-In addition to the functionality presented in @secref{minimal}, Congame
-tracks participants' progress through each study in a database to allow
-them to resume their progress when necessary (e.g., when they close the
-browser tab and return to the website, after their continuations expire,
-or after a server re-deployment). To facilitate this, Congame keeps
-track of an in-memory ``study stack'' per participant that is serialized
-to the database after every step. This stack is stored using dynamic
-variables (@emph{parameters}@~cite[b:delimited-composable-control]
-in Racket parlance). In specific cases, continuations interact with
-parameters in surprising ways.
+To allow participants to resume when necessary (e.g., when they
+close the browser tab and return to the website, after their
+continuations expire, or after a server re-deployment), Congame
+persists the participant's position: the fully-qualified path to the
+node they reached within the study tree as represented as a list of
+ids. In memory, this position is tracked using dynamic variables
+(@emph{parameters}@~cite[b:delimited-composable-control] in Racket
+parlance). In specific cases, continuations interact with parameters in
+surprising ways.
 
 @(define issue-4216
    (note (url "https://github.com/racket/racket/issues/4216")))
@@ -355,8 +354,8 @@ On the opposite side of the coin, because the Racket web server restores
 continuations in fresh threads, it is also possible to ``lose'' changes
 to a parameter when using direct assignment. Directly assigning a
 parameter in a thread records the change to the parameter in a thread
-cell, without affecting the current parameterization. Originally, we
-had used direct assignment to update the state of the study stack,
+cell, without affecting the current parameterization. Originally,
+we had used direct assignment to update the participant's position,
 which caused the parameter to reset at the boundary between steps.
 Then, we switched to explicit uses of @racket[parameterize], which
 extends the parameterization such that the changes are available in the
