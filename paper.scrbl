@@ -190,9 +190,9 @@ after the participant makes their choice, it checks the answer against
   (defstep (heads-or-tails)
     (define toss (random-ref '(h t)))
     (html
-     (button (λ () (set! ok? (eq? toss 'h))) "Heads")
+     (button "Heads" (λ () (set! ok? (eq? toss 'h))))
      " or "
-     (button (λ () (set! ok? (eq? toss 't))) "Tails")))
+     (button "Tails" (λ () (set! ok? (eq? toss 't))))))
   (defstep (result)
     (html
      (if ok?
