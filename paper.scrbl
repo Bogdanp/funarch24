@@ -186,7 +186,7 @@ after the participant makes their choice, it checks the answer against
   (defstep (intro)
     (html
      (h1 "Welcome to the study!")
-     (button void "Start")))
+     (button "Start")))
   (defstep (heads-or-tails)
     (define toss (random-ref '(h t)))
     (html
