@@ -75,10 +75,11 @@ system similar to Congame and demonstrate how natural it is to program
 web applications in this style. Then, in @secref{benefits} we note some
 positive benefits that follow from our design and compare our system
 to a popular platform for creating studies. In @secref{challenges} we
-describe some challenges of managing the data flow and of debugging in
-such a system. Finally, analyzing the pros and cons, we conclude in
-@secref{reflections} that the minor shortcomings of our approach are
-outweighed by its benefits of enabling a simpler overall architecture.
+describe some challenges of managing the data flow and of debugging
+in such a system. Finally, in @secref{reflections} we reflect on and
+broadly recommend our approach, analyze its pros and cons, and make
+suggestions targeted at other functional architects looking to implement
+similar systems.
 
 @section[#:tag "minimal"]{Mini Congame}
 
@@ -175,7 +176,7 @@ step can close over the step's environment and use regular functional
 programming techniques. @Figure-ref{var-example} illustrates that we
 can write a step that tosses a coin and stores the outcome in the local
 variable @racket[toss], then offers a choice to the participant and,
-after the participant makes their choice, it checks the answer against
+after the participant makes their choice, checks the answer against
 @racket[toss].
 
 @figure-here[
@@ -238,10 +239,10 @@ be run only for participants with a high score in @tt{app1}, then
 looks up this score and decides whether to run or hand over to
 @tt{app3}. In Congame, @tt{study1} can locally decide to transition
 to @tt{study2} or @tt{study3} depending on a high or low score.
-In @figure-ref{otree-example} we replicate the Congame example in
+In @figure-ref{otree-example} we replicate the Congame example from
 @figure-ref{var-example} using oTree, illustrating the problem of
-sharing data between apps@note{Of course, such a simple study would not
-normally be split across multiple apps.}. So, while the ease of use of
+sharing data between apps.@note{Of course, such a simple study would not
+normally be split across multiple apps.} So, while the ease of use of
 oTree makes developing simple studies easy, its limitations on composing
 studies and managing state make developing complex studies hard.
 
@@ -295,8 +296,8 @@ continuations made this design natural and allowed us to stay flexible.
 
 @subsection{Too Few or Too Many Parameters}
 
-To allow participants to resume when necessary (e.g., when they
-close the browser tab and return to the website, after their
+To allow participants to resume a study when necessary (e.g., when
+they close the browser tab and return to the website, after their
 continuations expire, or after a server re-deployment), Congame
 persists the participant's position: the fully-qualified path to the
 node they reached within the study tree as represented as a list of
@@ -452,11 +453,13 @@ than a straightforward depth-first traversal of a tree. The issues
 we encountered were primarily due to unexpected interactions
 between dynamic variables and delimited continuations. We recommend
 that functional architects avoid combining dynamic variables and
-continuations in their systems where possible, or do so with care, while
-taking into account the issues presented in @secref{challenges}. We also
-recommend that they carefully consider whether they need composable
-@emph{and} delimited continuations, or whether delimited alone will
-suffice.
+continuations in their systems where possible, or do so with care,
+while taking into account the issues presented in @secref{challenges}.
+If we were to rewrite Congame today, we would explicitly pass around
+a context object containing the data we need between steps instead of
+using dynamic variables. We also recommend that functional architects
+carefully consider whether they need composable @emph{and} delimited
+continuations, or whether delimited alone will suffice.
 
 To aid debugging, languages should provide tooling to allow
 continuations to be inspected at runtime. That way, when encountering
@@ -470,16 +473,19 @@ We believe continuations are the right abstraction for implementing
 interactive systems as targeted by Congame, such as surveys and market
 games, as well as any other system that requires some computation to
 be suspended until the user takes action (e.g. shopping carts, or
-simulations where the computation is delegated to another black box,
-etc.). For our use case, where backtracking via the browser's ``Back''
-button is undesirable, multi-shot continuations are not required but,
-in other applications, they may be useful. In that sense, in a language
-without continuations, coroutines would likely provide us with the same
-benefits, but would not be suitable for use cases where multi-shot
-continuations are required. Other approaches, such as regular web
-programming with manual routing or a weaker form of ``continuations''
-where URLs get mapped to closures, would not permit us to implement the
-core study harness in such a direct and simple way.
+simulations where part of the computation is delegated to another black
+box, etc.). For our use case, where backtracking via the browser's
+``Back'' button is undesirable, multi-shot continuations are not
+required but, in other applications, they may be useful. In that sense,
+in a language without continuations, coroutines would likely provide
+us with the same benefits, but would not be as good a fit for use
+cases where the possiblity of branching the user's progress through an
+interaction is a desirable feature (e.g. having the ability to open
+a separate tab to take a different path through a study tree). Other
+approaches, such as regular web programming with manual routing or a
+weaker form of ``continuations'' where URLs get mapped to closures,
+would not permit us to implement the core study harness in such a direct
+and simple way.
 
 @acks{We would like to thank the anonymous reviewers for their comments
 and suggestions.}
