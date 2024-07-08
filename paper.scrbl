@@ -1,10 +1,15 @@
-#lang scribble/acmart @sigplan @screen
+#lang scribble/acmart @sigplan @screen @review
 
 @(require scribble/core
           scriblib/figure
           scriblib/footnote
           (only-in scribble/manual racket racketblock racketblock0)
+          scribble/private/lang-parameters
           "bib.rkt")
+
+@(default-figure-caption-style #f)
+@(default-figure-counter-style 'bold)
+@(default-figure-label-text (make-element 'bold "Figure"))
 
 @title{Continuations: what have they ever done for us?}
 @subtitle{Experience Report}
@@ -67,12 +72,12 @@ bug-ridden state management system.@|greenspun-fn|
 We report on our experience using delimited continuations to implement
 Congame. In @secref{minimal} we show a minimal implementation of a
 system similar to Congame and demonstrate how natural it is to program
-web applications in this style. Then, in @secref{features} we note some
-positive features that follow from our design and compare our system
+web applications in this style. Then, in @secref{benefits} we note some
+positive benefits that follow from our design and compare our system
 to a popular platform for creating studies. In @secref{challenges} we
 describe some challenges of managing the data flow and of debugging in
 such a system. Finally, analyzing the pros and cons, we conclude in
-@secref{conclusion} that the minor shortcomings of our approach are
+@secref{reflections} that the minor shortcomings of our approach are
 outweighed by its benefits of enabling a simpler overall architecture.
 
 @section[#:tag "minimal"]{Mini Congame}
@@ -153,7 +158,7 @@ implemented using this framework.
       (step hello)
       (step done))))]]
 
-@section[#:tag "features"]{Features} @; Needs better title
+@section[#:tag "benefits"]{Benefits of Continuations}
 
 Using continuations allows us to progress through the study by
 traversing the study tree using regular techniques without having to worry
@@ -212,7 +217,7 @@ even harder.
 Of course, our design could be replicated without continuations, but
 continuations made this design natural and allowed us to stay flexible.
 
-@section[#:tag "challenges"]{Challenges}
+@section[#:tag "challenges"]{Challenges of Continuations}
 
 @subsection{Too Few or Too Many Parameters}
 
@@ -364,7 +369,7 @@ other two problems were still lurking, so we were surprised to later run
 into the same problem again. Eventually, we were able to find the root
 problems and fix them.
 
-@section[#:tag "conclusion"]{Conclusion}
+@section[#:tag "reflections"]{Reflections & Recommendations}
 
 Continuations allow us to write web code in a direct style, simplifying
 the job of embedding domain specific languages in a web context.
@@ -386,7 +391,7 @@ where closures get mapped to URLs, since neither of those approaches
 would permit us to implement the core study harness in such a direct and
 simple way.
 
-@acks{We would like to thank Matthew Flatt and the anonymous reviewers
-for their comments and suggestions.}
+@acks{We would like to thank the anonymous reviewers for their comments
+and suggestions.}
 
 @(generate-bibliography #:sec-title "References")
