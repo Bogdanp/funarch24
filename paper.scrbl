@@ -5,11 +5,17 @@
           scriblib/footnote
           (only-in scribble/manual racket racketblock racketblock0)
           scribble/private/lang-parameters
+          scribble/latex-properties
           "bib.rkt")
 
 @(default-figure-caption-style #f)
 @(default-figure-counter-style 'bold)
 @(default-figure-label-text (make-element 'bold "Figure"))
+@(define acm-meta
+  (make-element (make-style #f (list (make-tex-addition "acm-metadata.tex")))
+                ""))
+
+@acm-meta
 
 @title{Continuations: what have they ever done for us?}
 @subtitle{Experience Report}

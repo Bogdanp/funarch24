@@ -3,7 +3,8 @@ SCRIBBLE = raco scribble
 MAIN = paper.scrbl
 
 FILES = $(MAIN) \
-        bib.rkt 
+        bib.rkt \
+        acm-metadata.tex
 
 LATEX_FILES = tex/paper.tex \
               tex/acmart.cls \
