@@ -1,4 +1,4 @@
-#lang scribble/acmart @sigplan @screen @review
+#lang scribble/acmart @sigplan @screen
 
 @(require scribble/core
           scriblib/figure
