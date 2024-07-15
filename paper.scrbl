@@ -17,7 +17,7 @@
 
 @acm-meta
 
-@title{Continuations: what have they ever done for us?}
+@title{Continuations: What Have They Ever Done for Us?}
 @subtitle{Experience Report}
 
 @author[
