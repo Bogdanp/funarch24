@@ -22,6 +22,7 @@
 
 @author[
   "Marc Kaufmann"
+  #:orcid "0000-0003-0366-6329"
   #:email (email "kaufmannm@ceu.edu")
   #:affiliation (affiliation
                  #:institution @institution{Central European University}
@@ -31,6 +32,7 @@
 
 @author[
   "Bogdan Popa"
+  #:orcid "0009-0001-7815-4742"
   #:email (email "bogdan@defn.io")
   #:affiliation (affiliation
                  #:institution @institution{Independent}
@@ -494,6 +496,7 @@ would not permit us to implement the core study harness in such a direct
 and simple way.
 
 @acks{We would like to thank the anonymous reviewers for their comments
-and suggestions.}
+and suggestions. This work was partially funded by Central European
+University Private University.}
 
 @(generate-bibliography #:sec-title "References")
