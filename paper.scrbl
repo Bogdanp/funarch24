@@ -17,8 +17,7 @@
 
 @acm-meta
 
-@title{Continuations: What Have They Ever Done for Us?}
-@subtitle{Experience Report}
+@title{Continuations: What Have They Ever Done for Us? (Experience Report)}
 
 @author[
   "Marc Kaufmann"
