@@ -15,7 +15,7 @@ LATEX_FILES = tex/paper.tex \
 
 pdf/paper.pdf: $(FILES)
 	@mkdir -p pdf
-	$(SCRIBBLE) --dest pdf --pdf $(MAIN)
+	$(SCRIBBLE) $(STYLE_OPTS) --dest pdf --pdf $(MAIN)
 
 $(LATEX_FILES): $(FILES)
 	@mkdir -p tex

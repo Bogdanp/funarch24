@@ -39,8 +39,6 @@
                  #:country "Romania")
 ]
 
-@keywords{Continuations, Web, Racket/Scheme, State management}
-
 @abstract{
   Surveys and experiments in economics involve stateful interactions:
   participants receive different messages based on earlier answers,
@@ -92,6 +90,7 @@
 @ccsdesc[#:number 300 "Software and its engineering~Data flow architectures"]
 @ccsdesc[#:number 300 "Software and its engineering~Functional languages"]
 
+@keywords{Continuations, Web, Racket/Scheme, State management}
 
 @section[#:tag "intro"]{Introduction}
 
