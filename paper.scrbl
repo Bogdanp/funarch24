@@ -237,18 +237,22 @@ after the participant makes their choice, checks the answer against
   (defstep (heads-or-tails)
     (define toss (random-ref '(h t)))
     (html
-     (button "Heads" (λ () (set! ok? (eq? toss 'h))))
+     (button
+      "Heads"
+      (λ () (set! ok? (eq? toss 'h))))
      " or "
-     (button "Tails" (λ () (set! ok? (eq? toss 't))))))
+     (button
+      "Tails"
+      (λ () (set! ok? (eq? toss 't))))))
   (defstep (result)
     (html
      (if ok?
          (p "You guessed right.")
          (p "You guessed wrong."))))
   (defstudy choices
-    [heads-or-tails --> ,(λ () done)])
+    [heads-or-tails --> ,end])
   (defstudy example
-    [intro --> choices --> result --> ,(λ () done)])]]
+    [intro --> choices --> result --> ,end])]]
 
 Since our approach is data-driven, changing our data structures requires
 only minor changes to our harness. For instance, adding support for

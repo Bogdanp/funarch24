@@ -2,6 +2,7 @@
 
 (require racket/random)
 
+(define end (λ () done))
 (defvar* ok? guessed-correctly-1)
 (defstep (intro)
   (html
@@ -19,6 +20,6 @@
        (p "You guessed right.")
        (p "You guessed wrong."))))
 (defstudy choices
-  [heads-or-tails --> ,(λ () done)])
+  [heads-or-tails --> ,end])
 (defstudy example
-  [intro --> choices --> result --> ,(λ () done)])
+  [intro --> choices --> result --> ,end])
