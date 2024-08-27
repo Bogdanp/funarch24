@@ -2,7 +2,7 @@
 
 (require pict
          slideshow/code
-         threading)
+         slideshow/text)
 
 (define (author+email name email)
   (vc-append
@@ -40,7 +40,7 @@
                  ([action "/answer"])
                  (input ([name "guess"]))
                  (button "Submit")))))
-
+           code:blank
            (define (answer-page req)
              (define n
                (let ([s (cookies-ref req "n")])
@@ -54,11 +54,11 @@
                 [(= guess n) "You guessed right."]
                 [(< guess n) "Your guess was too low."]
                 [(> guess n) "Your guess was too high."])))
-
+           code:blank
            (register-route! "/answer" answer-page))]
          [example-with-continuations
           (code
-           (define (guess-the-number _req)
+           (define (guess-the-number req)
              (define n (random 1 100))
              (define next-req
                (send/suspend
@@ -90,8 +90,67 @@
          @t{We can write:}
          example-with-continuations)))))))
 
-(slide
- #:title @~a{Mini Congame}) ;; Bogdan
+(slide ;; Bogdan
+ #:title @~a{Mini Congame}
+ 'alts
+ (let ([mini-congame
+        (lambda ()
+          (code
+           (define current-embed (make-parameter #f))
+           (struct step (handler))
+           (struct study (steps))
+           (define (run-study the-study)
+             (let loop ([steps (study-steps the-study)])
+               (if (null? steps)
+                   '(continue)
+                   (match (begin0 (run-step (car steps))
+                            (redirect/get/forget))
+                     ['(retry) (loop steps)]
+                     ['(continue) (loop (cdr steps))]))))
+           (define (run-step the-step)
+             (match the-step
+               [(step (? study? substudy))
+                (run-study substudy)]
+               [(step handler)
+                (send/suspend/dispatch
+                 (lambda (embed)
+                   (parameterize ([current-embed embed])
+                     (response/xexpr (handler)))))]))))]
+       [widgets
+        (lambda ()
+          (code
+           (define (button label [action void])
+             `(a
+               ([href ,((current-embed)
+                        (lambda (_req)
+                          (action)
+                          '(continue)))])
+               ,label))
+           code:blank
+           (define (form e [action (λ (_req) #t)])
+             `(form
+               ([action ,((current-embed/url)
+                          (lambda (req)
+                            (if (action req)
+                                '(continue)
+                                '(retry))))]
+                [method "POST"])
+               ,e))))])
+   (list
+    (list
+     @t{The core of Congame is:}
+     'next
+     @item{Studies, represented as trees of @italic{steps} and sub-studies.}
+     @item{A servlet that traverses a given study, implemented using continuations.}
+     @item{Widgets that let a participant interact with the study.})
+    (list
+     (parameterize ([get-current-code-font-size (λ () 24)])
+       (mini-congame)))
+    (list
+     (parameterize ([get-current-code-font-size (λ () 18)])
+       (ht-append
+        (mini-congame)
+        (widgets)))))))
 
 (slide
  #:title @~a{Challenge: Combining Dynamic Variables and Continuations}) ;; Bogdan
