@@ -49,7 +49,7 @@
                (error "how'd you get here?"))
              (define guess
                (string->number (form-ref req "guess")))
-             (response
+             (response/xexpr
               (cond
                 [(= guess n) "You guessed right."]
                 [(< guess n) "Your guess was too low."]
