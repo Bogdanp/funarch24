@@ -15,13 +15,37 @@
  @author+email["Bogdan Popa"]{bogdan@"@"defn.io})
 
 (slide
- #:title @~a{Intro}) ;; Marc
+ #:title @~a{Intro}
+ @t{Congame is a platform for economics experiments.}
+ 'next
+ @t{These are stateful applications:}
+ @item{Track participants' progress}
+ @item{Randomize them into treatments}
+ @item{Progress depends on past behavior}
+ @item{Safe sharing and storing of data})
 
 (slide
- #:title @~a{Congame}) ;; Marc
+ #:title @~a{Congame}
+
+ @t{Example study: <<LINK>>}
+ ) ;; Marc: What does congame do?
+; What type of study:
+; - Provide name and favorite programming language
+; - Display different messages depending on the programming language provided, and use the name to respond
+; - Guess coin toss, so that it already prepares the ground for later.
 
 (slide
- #:title @~a{Congame vs oTree}) ;; Marc
+ #:title @~a{Why Congame?}
+
+ @t{The origin story:}
+
+ ; Break these into
+ @item{Reusability and composability: example of not being able to reuse parts (Tasks5, Tasks10)}
+ @item{Linking participants over time: manually linking studies over time}
+ @item{Non-linear flow: not having to have hundreds of flags to decide whether a page should be displayed or not}
+ @item{Using all features of programming language no matter where}
+ @item{Easy (non-global) state management}
+ @item{Sane data storage: scope etc});; Marc: Why is this useful/different/better than other software? Take from paper, but split into several points.
 
 (slide ;; Bogdan
  #:title @~a{Continuations on the Web}
@@ -159,4 +183,4 @@
  #:title @~a{Challenge: Debugging}) ;; Bogdan
 
 (slide
- #:title @~a{Reflections}) ;; Marc & Bogdan
+ #:title @~a{Reflections}) ;; Marc & Bogdan: highlight costs of working in it, not just "is it possible"
