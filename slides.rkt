@@ -16,18 +16,26 @@
 
 (slide
  #:title @~a{Intro}
- @t{Congame is a platform for economics experiments.}
+ @para{Congame is a platform for economics experiments, which are stateful applications:}
  'next
- @t{These are stateful applications:}
  @item{Track participants' progress}
  @item{Randomize them into treatments}
  @item{Progress depends on past behavior}
  @item{Safe sharing and storing of data})
 
 (slide
+ #:title @~a{Overview}
+ @item{Illustration of Congame}
+ @item{Benefits of Congame}
+ @item{Continuations}
+ @item{Mini Congame implementation}
+ @item{Challenges}
+ @item{Reflections})
+
+(slide
  #:title @~a{Congame}
 
- @t{Example study: <<LINK>>}
+ @t{Example study}
  ) ;; Marc: What does congame do?
 ; What type of study:
 ; - Provide name and favorite programming language
@@ -39,7 +47,7 @@
 
  @t{The origin story:}
 
- ; Break these into
+ ; Break these into gains from congame vs from continuations
  @item{Reusability and composability: example of not being able to reuse parts (Tasks5, Tasks10)}
  @item{Linking participants over time: manually linking studies over time}
  @item{Non-linear flow: not having to have hundreds of flags to decide whether a page should be displayed or not}
