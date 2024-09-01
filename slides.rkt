@@ -15,45 +15,92 @@
  @author+email["Bogdan Popa"]{bogdan@"@"defn.io})
 
 (slide
- #:title @~a{Intro}
+ #:title @~a{Intro: Illustration of Congame}
+
  @para{Congame is a platform for economics experiments, which are stateful applications:}
  'next
- @item{Track participants' progress}
- @item{Randomize them into treatments}
- @item{Progress depends on past behavior}
- @item{Safe sharing and storing of data})
+
+ @t{Example study: #<INCLUDE LINK AND QR CODE>})
 
 (slide
- #:title @~a{Overview}
- @item{Illustration of Congame}
- @item{Benefits of Congame}
- @item{Continuations}
- @item{Mini Congame implementation}
- @item{Challenges}
- @item{Reflections})
+ #:title @~a{Aspirations of Congame}
+
+ @bit{Expand the Range of the Possible}
+
+ 'next
+ @para{Concretely, scale controlled experiments to:}
+ 'next
+ @item{long-term experiments,}
+ 'next
+ @item{with many, interacting treatments,}
+ 'next
+ @item{personalized to the participants,}
+ 'next
+ @item{while tracking multi-dimensional outcomes.}
+ 'next
+
+ @para{Above all, this requires @it{composable} studies.})
 
 (slide
- #:title @~a{Congame}
+ #:title @~a{Why a Custom Platform?}
 
- @t{Example study}
- ) ;; Marc: What does congame do?
-; What type of study:
-; - Provide name and favorite programming language
-; - Display different messages depending on the programming language provided, and use the name to respond
-; - Guess coin toss, so that it already prepares the ground for later.
+ @para{Why not use web frameworks (e.g., PHP, Django)?}
+ 'next
+ @item{Do not address universal tasks:}
+ @subitem{Track participants, store and extract data.}
+ 'next
+ @item{Experimentalists don't care about web programming:}
+ @subitem{How to handle requests, create DB schemas.}
+ 'next
+ @item{No notion of @it{study},}
+ @subitem{thus poor composability of studies.})
+
+(slide
+ #:title @~a{Why a Custom Platform?}
+ @t{Why not use specialized software (e.g., oTree, Qualtrics)?}
+ 'next
+ @item{Qualtrics: clicky-clicky gooey interface}
+ 'next
+ @item{oTree: strong limitations on composing studies.}
+ 'next
+ @subitem{@bt{But} oTree has many nice features,}
+ 'next
+ @subitem{and is the primary inspiration of Congame.})
+
 
 (slide
  #:title @~a{Why Congame?}
+ @item{Automatically tracks participants}
+ 'next
+ @item{Notion of @it{study} and @it{step}}
+ @subitem{Recursive and composable}
+ @subitem{Can be generated dynamically}
+ 'next
+ @item{Full power of Racket available (almost) anywhere}
+ 'next
+ @item{Notion of @it{study} scope for variables}
+ @subitem{Imitates @it{lexical} scope}
+ @subitem{=> study composition without name collisions}
+ 'next
+ @item{Predictable sharing of data and variables across study})
 
- @t{The origin story:}
+(slide
+ #:title @~a{Why Continuations?}
 
- ; Break these into gains from congame vs from continuations
- @item{Reusability and composability: example of not being able to reuse parts (Tasks5, Tasks10)}
- @item{Linking participants over time: manually linking studies over time}
- @item{Non-linear flow: not having to have hundreds of flags to decide whether a page should be displayed or not}
- @item{Using all features of programming language no matter where}
- @item{Easy (non-global) state management}
- @item{Sane data storage: scope etc});; Marc: Why is this useful/different/better than other software? Take from paper, but split into several points.
+ @para{Continuations, by closing over arbitrary code, naturally enabled several of these benefits:}
+ 'next
+ @item{Naturally captures state and progress}
+ @subitem{Traverse study naturally}
+ 'next
+ @item{Pick most appropriate data structure without worrying about serialization.}
+ 'next
+ @item{Use full power of Racket}
+ 'next
+ @para{These in turn facilitated the other advantages, while staying flexible.})
+
+(slide
+ #:title @~a{Why Congame?}
+ )
 
 (slide ;; Bogdan
  #:title @~a{Continuations on the Web}
