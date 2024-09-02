@@ -9,6 +9,10 @@
    (t name)
    (colorize (t email) "gray")))
 
+(define-syntax-rule (with-code-size size body0 body ...)
+  (parameterize ([get-current-code-font-size (lambda () size)])
+    body0 body ...))
+
 (slide
  @titlet{Continuations: What Have They Ever Done for Us?}
  @author+email["Marc Kaufmann"]{kaufmannm@"@"ceu.edu}
@@ -107,7 +111,7 @@
  @t{Web programming with continuations simplifies control flow.}
  'next
  'alts
- (parameterize ([get-current-code-font-size (λ () 16)])
+ (with-code-size 15
    (let ([example-without-continuations
           (code
            (define (guess-page req)
@@ -134,10 +138,11 @@
                 [(< guess n) "Your guess was too low."]
                 [(> guess n) "Your guess was too high."])))
            code:blank
+           (register-route! "/" guess-page)
            (register-route! "/answer" answer-page))]
          [example-with-continuations
           (code
-           (define (guess-the-number req)
+           (define (guess-page req)
              (define n (random 1 100))
              (define next-req
                (send/suspend
@@ -153,7 +158,9 @@
               (cond
                 [(= guess n) "You guessed right."]
                 [(< guess n) "Your guess was too low."]
-                [(> guess n) "Your guess was too high."]))))])
+                [(> guess n) "Your guess was too high."])))
+           code:blank
+           (register-route! "/" guess-page))])
      (list
       (list
        @t{Instead of:}
@@ -195,18 +202,20 @@
                  (lambda (embed)
                    (parameterize ([current-embed embed])
                      (response/xexpr (handler)))))]))))]
-       [widgets
+       [button-widget
         (lambda ()
           (code
            (define (button label [action void])
              `(a
                ([href ,((current-embed)
-                        (lambda (_req)
+                        (lambda (req)
                           (action)
                           '(continue)))])
-               ,label))
-           code:blank
-           (define (form e [action (λ (_req) #t)])
+               ,label))))]
+       [form-widget
+        (lambda ()
+          (code
+           (define (form e [action (λ (req) #t)])
              `(form
                ([action ,((current-embed/url)
                           (lambda (req)
@@ -214,25 +223,183 @@
                                 '(continue)
                                 '(retry))))]
                 [method "POST"])
-               ,e))))])
+               ,e))))]
+       [example-study
+        (lambda ()
+          (code
+           (define (hello)
+             `(div
+               (p "Welcome to the study.")
+               ,(button "Continue")))
+           code:blank
+           (define (done)
+             `(p "Thank you for participating."))
+           code:blank
+           (define example-study
+             (study
+              (list
+               (step hello)
+               (step done))))))])
    (list
     (list
      @t{The core of Congame is:}
      'next
      @item{Studies, represented as trees of @italic{steps} and sub-studies.}
+     'next
      @item{A servlet that traverses a given study, implemented using continuations.}
+     'next
      @item{Widgets that let a participant interact with the study.})
     (list
-     (parameterize ([get-current-code-font-size (λ () 24)])
+     (with-code-size 24
        (mini-congame)))
     (list
-     (parameterize ([get-current-code-font-size (λ () 18)])
-       (ht-append
-        (mini-congame)
-        (widgets)))))))
+     (with-code-size 24
+       (vc-append
+        20
+        (button-widget)
+        (form-widget))))
+    (list
+     (with-code-size 24
+       (example-study))))))
 
-(slide
- #:title @~a{Challenge: Combining Dynamic Variables and Continuations}) ;; Bogdan
+(slide ;; Bogdan
+ #:title @~a{Challenge: Dynamic Variables}
+ 'alts
+ (let ([thread-example
+        (with-code-size 20
+          (code
+           (define p (make-parameter #f))
+           (define tag (make-continuation-prompt-tag))
+           (define k-ch (make-channel))
+           (void
+            (thread
+             (lambda ()
+               (call-with-continuation-prompt
+                (lambda ()
+                  (parameterize ([p 'p1])
+                    (p 'p2)
+                    ((call-with-current-continuation
+                      (lambda (k)
+                        (thunk (channel-put k-ch k)))
+                      tag))))
+                tag))))
+           (thread-wait
+            (thread
+             (lambda ()
+               (define k (channel-get k-ch))
+               (call-with-continuation-prompt
+                (lambda ()
+                  (k (λ () (printf "~s~n" (p)))))
+                tag))))))]
+       [cont-example-1
+        (with-code-size 20
+          (code
+           (define a (make-parameter #f))
+           (define b (make-parameter #f))
+           (define tag (make-continuation-prompt-tag))
+           (define k
+             (parameterize ([a 'a])
+               (call-with-continuation-prompt
+                (lambda ()
+                  ((call-with-current-continuation
+                    (λ (k) (thunk k))
+                    tag)))
+                tag)))
+           (call-with-continuation-prompt
+            (lambda ()
+              (k (lambda ()
+                   (printf "~s ~s~n" (a) (b)))))
+            tag)))]
+       [cont-example-2
+        (with-code-size 20
+          (code
+           (define a (make-parameter #f))
+           (define b (make-parameter #f))
+           (define tag (make-continuation-prompt-tag))
+           (define k
+             (parameterize ([a 'a])
+               (call-with-continuation-prompt
+                (lambda ()
+                  (parameterize ([b 'b])
+                    ((call-with-current-continuation
+                      (λ (k) (thunk k))
+                      tag))))
+                tag)))
+           (call-with-continuation-prompt
+            (lambda ()
+              (k (lambda ()
+                   (printf "~s ~s~n" (a) (b)))))
+            tag)))])
+   (list
+    (list
+     @para{Racket has dynamic variable support via ``parameters''.}
+     'next
+     @item{Parameters are thread-specific and continuation-specific.}
+     'next
+     @item{In Congame, we use parameters to track the user's current position in a study.})
+    (list
+     @item{Parameters can be changed using the @code[parameterize] form.}
+     'next
+     @item{Or by using direct assignment: @code[(current-position ...)]}
+     'next
+     @item{Direct assignment mutates the thread-local state directly
+                  without affecting any surrounding parameterizations.})
+    (list
+     @para{Thread specific:}
+     (with-code-size 24
+       (code
+        (define current-position
+          (make-parameter null))
+        code:blank
+        (parameterize ([current-position '(root study-1)])
+          (thread
+           (lambda ()
+             (displayln (current-position))
+             (current-position '(root study-1 study-2))
+             (displayln (current-position)))))
+        code:blank
+        (parameterize ([current-position '(root study-2)])
+          (thread
+           (lambda ()
+             (displayln (current-position)))))
+        code:blank
+        (code:comment "Output:")
+        (code:comment "(root study-1)")
+        (code:comment "(root study-1 study-2)")
+        (code:comment "(root study-2)"))))
+    (list
+     @para{Parameter loss:}
+     thread-example)
+    (list
+     @para{Parameter loss:}
+     (ht-append
+      thread-example
+      (with-code-size 20
+        (code
+         (code:comment "Output:")
+         (code:comment "p1")))))
+    (list
+     @para{Continuations + parameters:}
+     cont-example-1)
+    (list
+     @para{Continuations + parameters:}
+     (vl-append
+      cont-example-1
+      (with-code-size 20
+        (code
+         (code:comment "Output:")
+         (code:comment "#f #f")))))
+    (list
+     @para{A surprising interaction:}
+     cont-example-2)
+    (list
+     @para{A surprising interaction:}
+     (vl-append
+      cont-example-2
+      (with-code-size 20
+        (code
+         (code:comment "Output:")
+         (code:comment "a b"))))))))
 
 (slide
  #:title @~a{Challenge: Debugging}) ;; Bogdan
