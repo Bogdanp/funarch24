@@ -340,7 +340,7 @@
     (list
      @item{Parameters can be changed using the @code[parameterize] form.}
      'next
-     @item{Or by using direct assignment: @code[(current-position ...)]}
+     @item{Or by using direct assignment: @code[(current-directory "/home")]}
      'next
      @item{Direct assignment mutates the thread-local state directly
                   without affecting any surrounding parameterizations.})
