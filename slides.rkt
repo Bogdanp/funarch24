@@ -358,15 +358,14 @@
              (current-position '(root study-1 study-2))
              (displayln (current-position)))))
         code:blank
-        (parameterize ([current-position '(root study-2)])
-          (thread
-           (lambda ()
-             (displayln (current-position)))))
+        (thread
+         (lambda ()
+           (displayln (current-position))))
         code:blank
         (code:comment "Output:")
         (code:comment "(root study-1)")
         (code:comment "(root study-1 study-2)")
-        (code:comment "(root study-2)"))))
+        (code:comment "()"))))
     (list
      @para{Parameter loss:}
      thread-example)
@@ -401,8 +400,31 @@
          (code:comment "Output:")
          (code:comment "a b"))))))))
 
-(slide
- #:title @~a{Challenge: Debugging}) ;; Bogdan
+(slide ;; Bogdan
+ #:title @~a{Challenge: Debugging}
+ 'alts
+ (list
+  (list
+   @item{There is mental overhead related to programming with continuations.}
+   'next
+   @item{Using continuations can amplify bugs.}
+   @(hc-append
+     (scale (bitmap "debugging-1.png") 0.2)
+     (scale (bitmap "debugging-2.png") 0.2)))))
+
+(slide ;; Marc & Bogdan: highlight costs of working in it, not just "is it possible"
+ #:title @~a{Reflections & Recommendations}
+ 'alts
+ (list
+  (list
+   'next
+   @item{Continuations let us implement our study harness as a straightforward depth-first traversal of a tree.}
+   'next
+   @item{Less powerful language features, such as coroutines might similar benefits.}
+   'next
+   @item{The issues we encountered were mostly due to some surprising interactions between dynamic variables and delimited continuations.}
+   'next
+   @item{It would be nice if continuations were inspectable at runtime to aid with debugging.})))
 
 (slide
- #:title @~a{Reflections}) ;; Marc & Bogdan: highlight costs of working in it, not just "is it possible"
+ @titlet{Thanks!})
