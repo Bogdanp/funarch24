@@ -217,7 +217,7 @@
           (code
            (define (form e [action (λ (req) #t)])
              `(form
-               ([action ,((current-embed/url)
+               ([action ,((current-embed)
                           (lambda (req)
                             (if (action req)
                                 '(continue)
@@ -363,9 +363,9 @@
            (displayln (current-position))))
         code:blank
         (code:comment "Output:")
-        (code:comment "(root study-1)")
-        (code:comment "(root study-1 study-2)")
-        (code:comment "()"))))
+        (code:comment "t1: (root study-1)")
+        (code:comment "t1: (root study-1 study-2)")
+        (code:comment "t2: ()"))))
     (list
      @para{Parameter loss:}
      thread-example)
@@ -420,7 +420,7 @@
    'next
    @item{Continuations let us implement our study harness as a straightforward depth-first traversal of a tree.}
    'next
-   @item{Less powerful language features, such as coroutines might similar benefits.}
+   @item{Less powerful language features, such as coroutines might offer similar benefits.}
    'next
    @item{The issues we encountered were mostly due to some surprising interactions between dynamic variables and delimited continuations.}
    'next
