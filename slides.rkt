@@ -1,8 +1,10 @@
 #lang at-exp slideshow
 
 (require pict
+         (only-in scribble/base verbatim)
          slideshow/code
-         slideshow/text)
+         slideshow/text
+         )
 
 (define (author+email name email)
   (vc-append
@@ -103,8 +105,57 @@
  @para{These in turn facilitated the other advantages, while staying flexible.})
 
 (slide
- #:title @~a{Why Congame?}
+ #:title @~a{Benefits over oTree}
+
+ @item{Data structure is driven by ease-of-serialization and leads to limitations}
+ @item{Sharing of variables}
+ @item{Track participant over time/sessions has to be manually managed}
+ @item{Non-local code: split up across settings, choices, results.}
+ @item{Repetitions of task are tedious.}
  )
+
+(slide
+ #:title @~a{Benefits over oTree}
+
+ #;@verbatim|{
+# In settings.py:
+SESSION_CONFIGS = [{"app_sequence": [
+  'Intro', 'Choices', 'Result'
+]}]
+PARTICIPANT_FIELDS = ['ok']
+
+# In Intro/IntroPage.html:
+# ...
+{{ block content }}
+  <h1>Welcome to the study!</h1>
+  {{ next_button }}
+{{ endblock }}
+
+# In Choices/__init__.py:
+# ...
+class Player(BasePlayer):
+    choice = models.StringField(label='Choice:')
+
+class ChoicePage(Page):
+    form_model = 'player'
+    form_fields = ['choice']
+
+    @staticmethod
+    def before_next_page(player, timedout):
+        player.participant.ok = player.choice == random.choice(['heads', 'tails'])
+# ...
+
+# In Result/ResultPage.html:
+# ...
+{{ block content }}
+  {% if player.participant.ok %}
+    <p>You chose right.</p>
+  {% else %}
+    <p>You chose wrong.</p>
+  {% endif %}
+{{ endblock }}
+}|)
+
 
 (slide ;; Bogdan
  #:title @~a{Continuations on the Web}
