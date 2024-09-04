@@ -23,10 +23,13 @@
 (slide
  #:title @~a{Intro: Illustration of Congame}
 
- @para{Congame is a platform for economics experiments, which are stateful applications:}
+ @t{Congame is a platform for economics experiments.}
+
  'next
 
- @t{Example study: #<INCLUDE LINK AND QR CODE>})
+ @bt{https://bit.ly/4cQNWcY}
+
+ @(scale (bitmap "qr-code.png") 0.8))
 
 (slide
  #:title @~a{Aspirations of Congame}
