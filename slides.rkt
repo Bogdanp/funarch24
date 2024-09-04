@@ -23,13 +23,8 @@
 (slide
  #:title @~a{Intro: Illustration of Congame}
 
- @t{Congame is a platform for economics experiments.}
+ @t{Congame is a platform for economics experiments.})
 
- 'next
-
- @bt{https://bit.ly/4cQNWcY}
-
- @(scale (bitmap "qr-code.png") 0.8))
 
 (slide
  #:title @~a{Aspirations of Congame}
