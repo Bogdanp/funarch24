@@ -34,16 +34,18 @@
 (slide
  #:title @~a{Aspirations of Congame}
 
- @bit{Expand the Range of the Possible}
+ @bit{Expand the Range of Possible Experiments}
 
  'next
  @para{Concretely, scale controlled experiments to:}
  'next
- @item{long-term experiments,}
+ @item{large numbers of participants,}
+ 'next
+ @item{over long time periods and multiple sessions,}
  'next
  @item{with many, interacting treatments,}
  'next
- @item{personalized to the participants,}
+ @item{personalized to each participant,}
  'next
  @item{while tracking multi-dimensional outcomes.}
  'next
@@ -63,8 +65,7 @@
  @item{Qualtrics: clicky-clicky gooey interface.}
  'next
  @item{oTree (main inspiration of Congame)}
- @subitem{Ease of serialization determined data structure.}
- @subitem{Limits composing and reusing studies.})
+ @subitem{Ease of serialization drove data structure.})
 
 #;(slide
  #:title @~a{Why Congame?}
@@ -84,13 +85,15 @@
 
  @para{How do continuations relate to this?}
  'next
- @item{They close over arbitrary code, enabling composition and reusability:}
+ @item{Congame is written in @it{Racket} and its core uses @it{continuations}.}
  'next
- @subitem{Use full power of Racket.}
+ @item{These continuations enable multiple benefits:}
  'next
- @subitem{Data-driven notion of @it{study} (ignore serialization).} ;; Marc: say it is recursive and can be generated dynamically.
+ @subitem{use full power of Racket;}
  'next
- @item{Direct style that abstracts over request/response.})
+ @subitem{data-driven notion of @it{study} (ignore serialization);} ;; Marc: say it is recursive and can be generated dynamically.
+ 'next
+ @subitem{direct style that abstracts over request/response.})
 
 
 (slide
