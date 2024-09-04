@@ -398,7 +398,7 @@ class ChoicePage(Page):
      @item{Parameters can be changed using the @code[parameterize] form:}
      (with-code-size 24
        (code
-        (parameterize ([current-directory "/home/Bogdan"])
+        (parameterize ([current-directory "/home/bogdan"])
           (displayln (current-directory)))))
      'next
      @item{Or by using direct assignment:}
