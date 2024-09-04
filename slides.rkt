@@ -21,20 +21,13 @@
  @author+email["Bogdan Popa"]{bogdan@"@"defn.io})
 
 (slide
- #:title @~a{Intro: Illustration of Congame}
-
- @t{Congame is a platform for economics experiments.})
-
-
-(slide
- #:title @~a{Aspirations of Congame}
-
- @bit{Expand the Range of Possible Experiments}
+ #:title @~a{Congame: Platform for Economics Experiments}
 
  'next
- @para{Concretely, scale controlled experiments to:}
+ @bit{Goal: expand the range of possible experiments}
+
  'next
- @item{large numbers of participants,}
+ @item{to large numbers of participants,}
  'next
  @item{over long time periods and multiple sessions,}
  'next
@@ -45,7 +38,7 @@
  @item{while tracking multi-dimensional outcomes.}
  'next
 
- @para{This requires strong @it{composability} and @it{reusability}.})
+ @para{Requires strong @it{composability} and @it{reusability}.})
 
 (slide
  #:title @~a{Why a Custom Platform?}
