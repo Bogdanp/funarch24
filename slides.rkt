@@ -465,6 +465,7 @@
          (code:comment "Output:")
          (code:comment "a b"))))))))
 
+#;
 (slide ;; Bogdan
  #:title @~a{Challenge: Debugging}
  'alts
