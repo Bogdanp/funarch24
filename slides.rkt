@@ -290,7 +290,11 @@ class ChoicePage(Page):
              (study
               (list
                (step hello)
-               (step done))))))])
+               (step done))))
+           code:blank
+           (define (study-page req)
+             (run-study example-study))
+           (register-route! "/study" study-page)))])
    (list
     (list
      @t{The core of Congame is:}
@@ -387,11 +391,19 @@ class ChoicePage(Page):
      'next
      @item{Parameters are thread-specific and continuation-specific.}
      'next
+     @item{New threads inherit the paramterizations of their parents.}
+     'next
      @item{In Congame, we use parameters to track the user's current position in a study.})
     (list
-     @item{Parameters can be changed using the @code[parameterize] form.}
+     @item{Parameters can be changed using the @code[parameterize] form:}
+     (with-code-size 24
+       (code
+        (parameterize ([current-directory "/home/Bogdan"])
+          (displayln (current-directory)))))
      'next
-     @item{Or by using direct assignment: @code[(current-directory "/home")]}
+     @item{Or by using direct assignment:}
+     (with-code-size 24
+       (code (current-directory "/home/bogdan")))
      'next
      @item{Direct assignment mutates the thread-local state directly
                   without affecting any surrounding parameterizations.})
@@ -422,7 +434,7 @@ class ChoicePage(Page):
      thread-example)
     (list
      @para{Parameter loss:}
-     (ht-append
+     (ht-append 20
       thread-example
       (with-code-size 20
         (code
@@ -433,7 +445,7 @@ class ChoicePage(Page):
      cont-example-1)
     (list
      @para{Continuations + parameters:}
-     (vl-append
+     (vl-append 20
       cont-example-1
       (with-code-size 20
         (code
@@ -444,7 +456,7 @@ class ChoicePage(Page):
      cont-example-2)
     (list
      @para{A surprising interaction:}
-     (vl-append
+     (vl-append 20
       cont-example-2
       (with-code-size 20
         (code
