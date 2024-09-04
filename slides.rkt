@@ -114,7 +114,7 @@
 
  'next
  @para{3. Reusing apps by duplicating app folder}
- @item{Create symbolic link `Choices2` pointing to `Choices/`.})
+ @item{Create app `Choices2`, duplicating substantial code from `Choices1`.})
 
 
  ;@item{Non-local code: split up across settings, choices, results.}
