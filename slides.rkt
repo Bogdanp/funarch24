@@ -45,36 +45,25 @@
  @item{while tracking multi-dimensional outcomes.}
  'next
 
- @para{Above all, this requires @it{composable} studies.})
+ @para{This requires strong @it{composability} and @it{reusability}.})
 
 (slide
  #:title @~a{Why a Custom Platform?}
 
- @para{Why not use web frameworks (e.g., PHP, Django)?}
- 'next
- @item{Do not address universal tasks:}
- @subitem{Track participants, store and extract data.}
- 'next
- @item{Experimentalists don't care about web programming:}
- @subitem{How to handle requests, create DB schemas.}
- 'next
- @item{No notion of @it{study},}
- @subitem{thus poor composability of studies.})
+ @para{Existing tools have low composability and reusability:}
 
-(slide
- #:title @~a{Why a Custom Platform?}
- @t{Why not use specialized software (e.g., oTree, Qualtrics)?}
  'next
- @item{Qualtrics: clicky-clicky gooey interface}
+ @item{Web frameworks:}
+ @subitem{Expose too much @it{Web} (requests, DB, ...).}
+ @subitem{No notion of @it{study}.}
  'next
- @item{oTree: strong limitations on composing studies.}
+ @item{Qualtrics: clicky-clicky gooey interface.}
  'next
- @subitem{@bt{But} oTree has many nice features,}
- 'next
- @subitem{and is the primary inspiration of Congame.})
+ @item{oTree (main inspiration of Congame)}
+ @subitem{Ease of serialization determined data structure.}
+ @subitem{Limits composing and reusing studies.})
 
-
-(slide
+#;(slide
  #:title @~a{Why Congame?}
  @item{Automatically tracks participants}
  'next
@@ -85,77 +74,89 @@
  @item{Full power of Racket available (almost) anywhere}
  'next
  @item{Notion of @it{study} scope for variables}
- @subitem{Imitates @it{lexical} scope}
- @subitem{=> study composition without name collisions}
- 'next
- @item{Predictable sharing of data and variables across study})
+ @subitem{Imitates @it{lexical} scope})
 
 (slide
  #:title @~a{Why Continuations?}
 
- @para{Continuations, by closing over arbitrary code, naturally enabled several of these benefits:}
+ @para{How do continuations relate to this?}
  'next
- @item{Naturally captures state and progress}
- @subitem{Traverse study naturally}
+ @item{They close over arbitrary code, enabling composition and reusability:}
  'next
- @item{Pick most appropriate data structure without worrying about serialization.}
+ @subitem{Use full power of Racket.}
  'next
- @item{Use full power of Racket}
+ @subitem{Data-driven notion of @it{study} (ignore serialization).} ;; Marc: say it is recursive and can be generated dynamically.
  'next
- @para{These in turn facilitated the other advantages, while staying flexible.})
+ @item{Direct style that abstracts over request/response.})
+
 
 (slide
- #:title @~a{Benefits over oTree}
+ #:title @~a{Illustration: Comparison to oTree}
 
- @item{Data structure is driven by ease-of-serialization and leads to limitations}
- @item{Sharing of variables}
- @item{Track participant over time/sessions has to be manually managed}
- @item{Non-local code: split up across settings, choices, results.}
- @item{Repetitions of task are tedious.}
- )
+ (let ([otree-code (bitmap "oTree-code.png")])
+   (vc-append
+    5
+    @t{Heavily edited oTree code for Coin-Toss Game:}
+    (scale otree-code 0.38))))
 
 (slide
- #:title @~a{Benefits over oTree}
+ #:title @~a{Illustration: Comparison to oTree}
+ @para{1. Non-local code:}
+ @item{Local actions split across files.}
 
- #;@verbatim|{
-# In settings.py:
-SESSION_CONFIGS = [{"app_sequence": [
-  'Intro', 'Choices', 'Result'
-]}]
-PARTICIPANT_FIELDS = ['ok']
+ 'next
 
-# In Intro/IntroPage.html:
-# ...
-{{ block content }}
-  <h1>Welcome to the study!</h1>
-  {{ next_button }}
-{{ endblock }}
+ @para{2. Clumsy data sharing via global namespace:}
+ @item{Reusing app will overwrite `ok`.}
 
-# In Choices/__init__.py:
-# ...
-class Player(BasePlayer):
-    choice = models.StringField(label='Choice:')
+ 'next
+ @para{3. Reusing apps by duplicating app folder}
+ @item{Create symbolic link `Choices2` pointing to `Choices/`.})
 
-class ChoicePage(Page):
-    form_model = 'player'
-    form_fields = ['choice']
 
-    @staticmethod
-    def before_next_page(player, timedout):
-        player.participant.ok = player.choice == random.choice(['heads', 'tails'])
-# ...
+ ;@item{Non-local code: split up across settings, choices, results.}
+ ;@item{Global namespace for data sharing between apps.}
+ ;@item{Repetitions of task are tedious.}
 
-# In Result/ResultPage.html:
-# ...
-{{ block content }}
-  {% if player.participant.ok %}
-    <p>You chose right.</p>
-  {% else %}
-    <p>You chose wrong.</p>
-  {% endif %}
-{{ endblock }}
-}|)
+(slide
+ #:title @~a{Illustration: Comparison to oTree}
 
+ @para{Congame code for "Guessing a Coin Toss":}
+ (with-code-size 20
+   (let ([coin-toss-code
+          (code
+           (defvar* guess)
+           (defvar* toss)
+
+           (defstep (heads-or-tails)
+             (set! toss (random-ref '("h" "t")))
+             (md
+              (form
+               (set! guess (radios '(("h" . "Heads")
+                                     ("t" . "Tails"))
+                                   "Guess Heads or Tails"))
+               submit-button)))
+
+           (defstudy coin-toss
+             [heads-or-tails --> ,(lambda () done)])
+
+           (defstep (result)
+             @md{You chose @(if (equal? guess toss) "right" "wrong").})
+
+           (defstudy illustration
+             [coin-study --> result]))])
+     coin-toss-code)))
+
+(slide
+ #:title @~a{Illustration: Comparison to oTree}
+
+ @para{Difference stems from:}
+
+ @item{better notion and data structure of @it{study}}
+ @item{and availability of full power of Racket.}
+
+ 'next
+ @para{Both flow directly from the use of continuations.})
 
 (slide ;; Bogdan
  #:title @~a{Continuations on the Web}
@@ -476,6 +477,8 @@ class ChoicePage(Page):
      (scale (bitmap "debugging-2.png") 0.2)))))
 
 (slide ;; Marc & Bogdan: highlight costs of working in it, not just "is it possible"
+ ;; Continuations mean we don't have to make an architectural decision.
+ ;; No extra costs from picking the most appropriate data structure.
  #:title @~a{Reflections & Recommendations}
  'alts
  (list
@@ -488,6 +491,7 @@ class ChoicePage(Page):
    @item{The issues we encountered were mostly due to some surprising interactions between dynamic variables and delimited continuations.}
    'next
    @item{It would be nice if continuations were inspectable at runtime to aid with debugging.})))
+
 
 (slide
  @titlet{Thanks!})
