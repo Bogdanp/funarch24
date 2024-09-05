@@ -24,14 +24,16 @@
  #:title @~a{Congame: Platform for Economics Experiments}
 
  'next
- @bit{Goal: expand the range of possible experiments}
+ 'next
+
+ @bit{Congame: expand the range of possible experiments}
 
  'next
- @item{to large numbers of participants,}
+ @item{to large numbers of interacting participants,}
  'next
  @item{over long time periods and multiple sessions,}
  'next
- @item{with many, interacting treatments,}
+ @item{with many, overlapping treatments,}
  'next
  @item{personalized to each participant,}
  'next
@@ -43,17 +45,16 @@
 (slide
  #:title @~a{Why a Custom Platform?}
 
- @para{Existing tools have low composability and reusability:}
+ 'next
+ @para{Existing tools have low composability and reusability, due to no or poor notion of study.}
 
  'next
- @item{Web frameworks:}
+ @item{Web frameworks (e.g., Django, PHP, React):}
  @subitem{Expose too much @it{Web} (requests, DB, ...).}
- @subitem{No notion of @it{study}.}
  'next
  @item{Qualtrics: clicky-clicky gooey interface.}
  'next
- @item{oTree (main inspiration of Congame)}
- @subitem{Ease of serialization drove data structure.})
+ @item{oTree (main inspiration of Congame)})
 
 #;(slide
  #:title @~a{Why Congame?}
@@ -73,13 +74,13 @@
 
  @para{How do continuations relate to this?}
  'next
- @item{Congame is written in @it{Racket} and its core uses @it{continuations}.}
+ @item{Congame is written in @it{Racket} and uses @it{continuations}.}
  'next
  @item{These continuations enable multiple benefits:}
  'next
- @subitem{use full power of Racket;}
+ @subitem{use full power of Racket anywhere;}
  'next
- @subitem{data-driven notion of @it{study} (ignore serialization);} ;; Marc: say it is recursive and can be generated dynamically.
+ @subitem{composable notion of @it{study};} ;; Marc: say it is recursive and can be generated dynamically.
  'next
  @subitem{direct style that abstracts over request/response.})
 
@@ -116,11 +117,12 @@
  #:title @~a{Illustration: Comparison to oTree}
 
  @para{Congame code for "Guessing a Coin Toss":}
+ 'alts
  (with-code-size 20
-   (let ([coin-toss-code
+   (let ([coin-toss-code-1
           (code
-           (defvar* guess)
-           (defvar* toss)
+           (defvar guess)
+           (defvar toss)
 
            (defstep (heads-or-tails)
              (set! toss (random-ref '("h" "t")))
@@ -131,15 +133,37 @@
                                    "Guess Heads or Tails"))
                submit-button)))
 
-           (defstudy coin-toss
-             [heads-or-tails --> ,(lambda () done)])
-
            (defstep (result)
              @md{You chose @(if (equal? guess toss) "right" "wrong").})
 
            (defstudy illustration
-             [coin-study --> result]))])
-     coin-toss-code)))
+             [heads-or-tails --> result]))]
+         [coin-toss-code-2
+          (code
+           (defvar guess)
+           (defvar toss)
+
+           (defstep (heads-or-tails)
+             (set! toss (random-ref '("h" "t")))
+             (md
+              (form
+               (set! guess (radios '(("h" . "Heads")
+                                     ("t" . "Tails"))
+                                   "Guess Heads or Tails"))
+               submit-button)))
+
+           (defstep (result)
+             (md "You chose" @(if (equal? guess toss) "right" "wrong") "."
+                 (button "Next")))
+
+           (defstudy coin-toss
+             [heads-or-tails --> result])
+
+           (defstudy illustration
+             [(coin-toss-1 coin-toss) --> (coin-toss-2 coin-toss)]))])
+     (list
+      (list coin-toss-code-1)
+      (list coin-toss-code-2)))))
 
 (slide
  #:title @~a{Illustration: Comparison to oTree}
@@ -150,7 +174,9 @@
  @item{and availability of full power of Racket.}
 
  'next
- @para{Both flow directly from the use of continuations.})
+ @para{Both flow directly from the use of continuations.}
+
+ @item{Continuations are @it{sufficient}, not @it{necessary}.})
 
 (slide ;; Bogdan
  #:title @~a{Continuations on the Web}
