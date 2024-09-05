@@ -412,10 +412,17 @@
      'next
      @item{Parameters are thread-specific and continuation-specific.}
      'next
-     @item{New threads inherit the paramterizations of their parents.}
+     @item{New threads inherit the parameterizations of their parent threads.}
      'next
      @item{In Congame, we use parameters to track the user's current position in a study.})
     (list
+     @item{Parameters are created using @code[make-parameter]:}
+     'next
+     (with-code-size 24
+       (code
+        (define current-directory
+          (make-parameter #f))))
+     'next
      @item{Parameters can be changed using the @code[parameterize] form:}
      (with-code-size 24
        (code
