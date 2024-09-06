@@ -6,9 +6,12 @@
          slideshow/text
          )
 
-(define (author+email name email)
+(define (author+email name email #:affiliation [affiliation #f])
   (vc-append
    (t name)
+   (if affiliation
+       (colorize (t affiliation) "gray")
+       (t ""))
    (colorize (t email) "gray")))
 
 (define-syntax-rule (with-code-size size body0 body ...)
@@ -17,8 +20,8 @@
 
 (slide
  @titlet{Continuations: What Have They Ever Done for Us?}
- @author+email["Marc Kaufmann"]{kaufmannm@"@"ceu.edu}
- @author+email["Bogdan Popa"]{bogdan@"@"defn.io})
+ @author+email["Marc Kaufmann" #:affiliation "Central European University"]{kaufmannm@"@"ceu.edu}
+ @author+email["Bogdan Popa" #:affiliation "Independent"]{bogdan@"@"defn.io})
 
 (slide
  #:title @~a{Congame: Platform for Economics Experiments}
